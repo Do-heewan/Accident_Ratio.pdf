@@ -11,3 +11,6 @@
 *.pt
 *.h5
 *.ckpt
+
+# Open Source
+/mmdetection

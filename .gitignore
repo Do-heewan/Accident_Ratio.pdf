@@ -13,4 +13,4 @@
 *.ckpt
 
 # Open Source
-/mmdetection
+mmdetection/

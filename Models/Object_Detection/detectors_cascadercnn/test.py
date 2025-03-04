@@ -3,7 +3,9 @@ from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
 from mmengine import Config
 from mmdet.apis import inference_detector, init_detector
-from dataset import TrafficDataSet  # 데이터셋 클래스 import
+
+# from dataset import TrafficDataSet  # 데이터셋 클래스 import
+
 import cv2
 import time
 import json

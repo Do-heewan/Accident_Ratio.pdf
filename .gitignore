@@ -17,4 +17,6 @@ mmdetection/
 mmaction/
 mmaction2.egg-info/
 mmcv_custom/
+
 .eggs/
+.vscode/

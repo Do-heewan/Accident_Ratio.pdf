@@ -31,8 +31,9 @@ def convert_kst(timestamp):
 config_path = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/detectors_cascadercnn/config/cascade_rcnn_cfg.py"
 checkpoint_path = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/detectors_cascadercnn/work_dir/best_coco_bbox_mAP_epoch_10.pth"
 
-test_json = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/sample_data/coco_annotations (2).json" # 테스트 데이터셋 모음 json파일
 test_data = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/sample_data/" # 테스트 셋
+test_json = test_data + "coco_annotations - bb_1_170402_pedestrian_112_329.json" # 테스트 데이터셋 모음 json파일
+
 save_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/datasplit/" # 결과 저장 경로
 
 test_set_coco = COCO(test_json)

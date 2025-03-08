@@ -22,10 +22,10 @@ mmcv_custom/
 .vscode/
 
 # data
-.ext1/
-.ext2/
-.ext3/
-.test_data/
+ext1/
+ext2/
+ext3/
+test_data/
 
 # pred_data
-.datasplit/
+datasplit/

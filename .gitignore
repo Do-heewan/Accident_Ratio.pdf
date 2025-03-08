@@ -20,3 +20,12 @@ mmcv_custom/
 
 .eggs/
 .vscode/
+
+# data
+.ext1/
+.ext2/
+.ext3/
+.test_data/
+
+# pred_data
+.datasplit/

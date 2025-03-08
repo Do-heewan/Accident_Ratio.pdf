@@ -13,7 +13,6 @@
 *.ckpt
 
 *.log
-*.json
 
 # Open Source
 mmdetection/
@@ -24,11 +23,8 @@ mmcv_custom/
 .eggs/
 .vscode/
 
-# data
-ext1/
-ext2/
-ext3/
+# data & pred_data
 test_data/
-
-# pred_data
 datasplit/
+
+video_classification/

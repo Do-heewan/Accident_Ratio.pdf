@@ -22,12 +22,6 @@ def convert_kst(timestamp):
     str_datetime = tm_kst.strftime('%Y-%m-%d %H:%M:%S')
     return str_datetime
 
-#%%
-#config_path = "/root/detectors_cascadercnn/work_dir/cascade_rcnn_cfg.py"
-#checkpoint_path = "/root/detectors_cascadercnn/work_dir/best_coco_bbox_mAP_epoch_10.pth"
-#test_json = "/root/datasplit/test.json"
-#save_dir = "/root/datasplit/"
-
 config_path = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/detectors_cascadercnn/config/cascade_rcnn_cfg.py"
 checkpoint_path = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/detectors_cascadercnn/work_dir/best_coco_bbox_mAP_epoch_10.pth"
 

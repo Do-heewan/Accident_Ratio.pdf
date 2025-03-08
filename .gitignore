@@ -12,6 +12,9 @@
 *.h5
 *.ckpt
 
+*.log
+*.json
+
 # Open Source
 mmdetection/
 mmaction/

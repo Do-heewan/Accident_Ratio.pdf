@@ -30,12 +30,10 @@ def convert_kst(timestamp):
 
 config_path = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/detectors_cascadercnn/config/cascade_rcnn_cfg.py"
 checkpoint_path = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/detectors_cascadercnn/work_dir/best_coco_bbox_mAP_epoch_10.pth"
-test_json = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/sample_data/sample.json"
-test_data = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/sample_data/"
-save_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/datasplit/"
 
-# C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/detectors_cascadercnn
-# C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection
+test_json = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/sample_data/coco_annotations (2).json" # 테스트 데이터셋 모음 json파일
+test_data = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/sample_data/" # 테스트 셋
+save_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/Object_Detection/datasplit/" # 결과 저장 경로
 
 test_set_coco = COCO(test_json)
 
@@ -99,7 +97,7 @@ for i in tqdm(range(len(test_image_ids))):
         continue
     '''
 
-    result = inference_detector(model, image_path)  # img 대신 image_path 사용
+    result = inference_detector(model, image_path)
     
     labels = list(result.pred_instances.labels.detach().cpu().numpy())
     bboxes = list(result.pred_instances.bboxes.detach().cpu().numpy())
@@ -125,7 +123,7 @@ for i in tqdm(range(len(test_image_ids))):
         pred_list_accum.append(pred_infos)
 
     if (i != 0 and i%1000 == 0) or i == len(test_image_ids) - 1:
-        with open(os.path.join(save_dir, "pred_%s.json" % (i)), 'w') as file:
+        with open(os.path.join(save_dir, "pred_%s.json" % (i+1)), 'w') as file:
             json.dump(pred_list_accum, file, indent=4)
         pred_list_accum = []
     

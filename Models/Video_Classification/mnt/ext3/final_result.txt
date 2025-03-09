@@ -1,0 +1,15 @@
+실행 명령어: : python c:/Users/Noh/github/Accident_Prediction_Prevent/Models/Video_Classification/video_classfication/tools/FinalResult.py
+
+Start Time Stamp: 2025-02-27 22:11:10
+[2025-02-27 22:11:10]	view_1_model_0 f1-score  = 0.7052238805970149
+[2025-02-27 22:11:10]	view_1_model_1 f1-score  = 0.7180310326377743
+[2025-02-27 22:11:10]	view_1_model_2 f1-score  = 0.7062706270627063
+[2025-02-27 22:11:10]	view_1_model_3 f1-score  = 0.782800441014333
+[2025-02-27 22:11:10]	view_3_model_0 f1-score  = 0.7598684210526314
+[2025-02-27 22:11:10]	view_3_model_1 f1-score  = 0.7292418772563178
+[2025-02-27 22:11:10]	view_3_model_2 f1-score  = 0.7413127413127413
+[2025-02-27 22:11:10]	view_3_model_3 f1-score  = 0.9305019305019305
+[2025-02-27 22:11:10]	Total micro avg(f1-score) : 0.759156
+
+
+End Time Stamp: 2025-02-27 22:11:10

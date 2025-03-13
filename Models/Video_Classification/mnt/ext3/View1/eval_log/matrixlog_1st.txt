@@ -1,3 +1,13 @@
 실행 명령어: : python c:/Users/Noh/github/Accident_Prediction_Prevent/Models/Video_Classification/video_classfication/tools/PredictionWithConstraint.py
 
-Start Time Stamp: 2025-03-10 04:26:13
+Start Time Stamp: 2025-03-12 01:04:49
+[2025-03-12 01:04:57]	c:/Users/Noh/github/Accident_Prediction_Prevent/Models/Video_Classification/sample_data/test_data/원천데이터_231108_add/TS_차대보행자_영상_육교및지하도부근/bb_1_161018_pedestrian_112_331	육교 및 지하도 부근	횡단보도 없음	1.000000
+[2025-03-12 01:05:05]	c:/Users/Noh/github/Accident_Prediction_Prevent/Models/Video_Classification/sample_data/test_data/원천데이터_231108_add/TS_차대보행자_영상_육교및지하도부근/bb_1_170402_pedestrian_112_329	육교 및 지하도 부근	횡단보도 없음	1.000000
+[2025-03-12 01:05:13]	c:/Users/Noh/github/Accident_Prediction_Prevent/Models/Video_Classification/sample_data/test_data/원천데이터_231108_add/TS_차대보행자_영상_육교및지하도부근/bb_1_201220_pedestrian_209_21158	육교 및 지하도 부근	횡단보도 없음	1.000000
+[2025-03-12 01:05:20]	c:/Users/Noh/github/Accident_Prediction_Prevent/Models/Video_Classification/sample_data/test_data/원천데이터_231108_add/TS_차대보행자_영상_육교및지하도부근/bb_1_210211_pedestrian_250_20034	육교 및 지하도 부근	횡단보도 없음	1.000000
+[2025-03-12 01:05:28]	c:/Users/Noh/github/Accident_Prediction_Prevent/Models/Video_Classification/sample_data/test_data/원천데이터_231108_add/TS_차대보행자_영상_육교및지하도부근/bb_3_161003_pedestrian_147_171	육교 및 지하도 부근	횡단보도 없음	1.000000
+[2025-03-12 01:05:36]	c:/Users/Noh/github/Accident_Prediction_Prevent/Models/Video_Classification/sample_data/test_data/원천데이터_231108_add/TS_차대보행자_영상_육교및지하도부근/bb_3_181214_pedestrian_112_332	육교 및 지하도 부근	횡단보도 없음	1.000000
+[2025-03-12 01:05:44]	c:/Users/Noh/github/Accident_Prediction_Prevent/Models/Video_Classification/sample_data/test_data/원천데이터_231108_add/TS_차대보행자_영상_육교및지하도부근/bb_3_190909_pedestrian_226_21450	육교 및 지하도 부근	횡단보도 없음	1.000000
+micro avg(f1-score) : 0.0
+
+End Time Stamp: 2025-03-12 01:05:44

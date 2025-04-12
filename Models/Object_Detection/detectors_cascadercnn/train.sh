@@ -1,1 +1,0 @@
-CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=29500 /mmdetection/tools/dist_train.sh detectors_cascadercnn/config/cascade_rcnn_cfg.py 4

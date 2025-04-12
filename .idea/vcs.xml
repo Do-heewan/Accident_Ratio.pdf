@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/root/Object_Detection/lib/mmdetection" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/root/Video_classification/video_classfication/apex" vcs="Git" />
-  </component>
-</project>

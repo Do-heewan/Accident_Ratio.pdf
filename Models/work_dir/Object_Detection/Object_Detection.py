@@ -9,7 +9,7 @@ from glob import glob
 
 from PIL import Image
 
-video_name = "test3"
+video_name = "bb_1_020414_vehicle_187_056"
 
 work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 
@@ -17,7 +17,7 @@ config_path = work_dir + "Object_Detection/config/cascade_rcnn_cfg.py"
 checkpoint_path = work_dir + "Object_Detection/checkpoint/best_coco_bbox_mAP_epoch_10.pth"
 
 input_path = work_dir + "datasets/video_data/" + video_name + "/"
-output_path = work_dir + "datasets/detection_results/"
+output_path = work_dir + "datasets/Results/"
 
 def detect_objects(model, image_path, save_path, score_thr=0.3):
     """이미지에서 객체를 검출하고 결과를 JSON으로 저장"""
@@ -105,7 +105,7 @@ def main():
             all_detections.extend(detections)
     
     # 모든 검출 결과를 JSON으로 저장
-    output_file = os.path.join(output_path, video_name + ".json")
+    output_file = os.path.join(output_path, video_name + "_detection.json")
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(all_detections, f, ensure_ascii=False, indent=4)
     

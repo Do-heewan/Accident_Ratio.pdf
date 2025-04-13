@@ -6,18 +6,18 @@ import numpy as np
 from PIL import Image
 from tqdm import tqdm
 
-video_name = "test3/"
+video_name = "bb_1_020414_vehicle_187_056"
 
 work_dir = "c:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 data_dir = work_dir + "datasets/"
 
-image_path = data_dir + "video_data/" + video_name
-output_path = data_dir + "detection_results/"
+image_path = data_dir + "video_data/" + video_name + "/"
+output_path = data_dir + "Results/"
 
-pred_json_file = data_dir + "detection_results/test3.json"
+pred_json_file = data_dir + "Results/" + video_name + "_detection.json"
 
 # 출력 디렉토리 생성
-output_dir = os.path.join(output_path, video_name)
+output_dir = os.path.join(output_path, video_name + "_detection/")
 os.makedirs(output_dir, exist_ok=True)
 
 # 이미지 파일 목록 가져오기
@@ -126,10 +126,6 @@ def visualize_predictions(image_path, annotations, output_path):
             return True
         except Exception as save_err:
             print(f"저장 오류: {save_err}")
-            # 방법 3: 대체 위치에 저장
-            alt_path = f"./vis_results_{os.path.basename(final_path)}"
-            Image.fromarray(img).save(alt_path)
-            print(f"대체 경로에 저장됨: {alt_path}")
             return True
             
     except Exception as e:

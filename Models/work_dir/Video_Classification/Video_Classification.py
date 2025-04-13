@@ -24,6 +24,8 @@ import sys
 from datetime import datetime, timedelta
 import json
 
+video_name = "bb_1_020414_vehicle_187_056"
+
 real_categories_ids_1st = {
     0 : "직선 도로", 1 : "사거리 교차로(신호등 없음)", 2 : "사거리 교차로(신호등 있음)", 3 : "T자형 교차로",
     4 : "차도와 차도가 아닌 장소", 5 : "주차장(또는 차도가 아닌 장소)", 6 : "회전교차로", 7 : "횡단보도(신호등 없음)",
@@ -259,8 +261,6 @@ def inference_recognizer(model,
         scores, scores_pro = model.forward_test_with_constraint(imgs)
     return scores, scores_pro
 
-video_name = "test3/"
-
 work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 video_path = work_dir + "datasets/video_data/" + video_name + "/" # Video path
 
@@ -313,6 +313,7 @@ result_4th = real_categories_ids_4th[pred_class_id_4]
 
 results.append({
         'video_path': video_path,
+        'video_name': video_name,
         'accident_feature': result_1st,
         'accident_feature_detail' : result_2nd,
         'object_A' : result_3rd,
@@ -320,3 +321,14 @@ results.append({
     })
 
 print(f"{video_name} : {results[0]['accident_feature']}, {results[0]['accident_feature_detail']}, {results[0]['object_A']}, {results[0]['object_B']}")
+
+# Create output directory if it doesn't exist
+output_dir = os.path.join(work_dir, "datasets/Results")
+os.makedirs(output_dir, exist_ok=True)
+
+# Save results to a JSON file
+json_filename = os.path.join(output_dir, f"{video_name}_classification.json")
+with open(json_filename, 'w', encoding='utf-8') as f:
+    json.dump(results, f, ensure_ascii=False, indent=4)
+
+print(f"Results saved to {json_filename}")

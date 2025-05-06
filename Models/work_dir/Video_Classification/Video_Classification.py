@@ -259,7 +259,7 @@ model_path =  work_dir + "video_classification/models/" # Model path
 
 # Classifier 1
 config_path_1 = model_path + "/For1_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
-checkpoint_path_1 = model_path + '/For1_view1/epoch_20.pth'
+checkpoint_path_1 = model_path + '/For1_view1/for1_view1.pth'
 
 # Classifier 2
 config_path_2 = model_path + "/For2_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
@@ -267,11 +267,11 @@ checkpoint_path_2 = model_path + '/For2_view1/for2_view1.pth'
 
 # Classifier 3
 config_path_3 = model_path + "/For3_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
-checkpoint_path_3 = model_path + '/For3_view1/epoch_25.pth'
+checkpoint_path_3 = model_path + '/For3_view1/for3_view1.pth'
 
 # Classifier 4
 config_path_4 = model_path + "/For4_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
-checkpoint_path_4 = model_path + '/For4_view1/epoch_16.pth'
+checkpoint_path_4 = model_path + '/For4_view1/for4_view1.pth'
 
 model_1 = init_recognizer(config_path_1, checkpoint_path_1, device='cpu', use_frames=True)
 model_2 = init_recognizer(config_path_2, checkpoint_path_2, device='cpu', use_frames=True)

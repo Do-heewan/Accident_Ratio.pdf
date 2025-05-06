@@ -298,13 +298,13 @@ result_4th = real_categories_ids_4th[pred_class_id_4]
 results.append({
         'video_path': video_path,
         'video_name': video_name,
-        'accident_feature': result_1st,
-        'accident_feature_detail' : result_2nd,
+        'accident_place': result_1st,
+        'accident_place_feature' : result_2nd,
         'object_A' : result_3rd,
         'object_B' : result_4th,
     })
 
-print(f"{video_name} : {results[0]['accident_feature']}, {results[0]['accident_feature_detail']}, {results[0]['object_A']}, {results[0]['object_B']}")
+print(f"{video_name} : {results[0]['accident_place']}, {results[0]['accident_place_feature']}, {results[0]['object_A']}, {results[0]['object_B']}")
 
 # Create output directory if it doesn't exist
 output_dir = os.path.join(work_dir, "datasets/Results")

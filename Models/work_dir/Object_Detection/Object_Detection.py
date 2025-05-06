@@ -1,15 +1,13 @@
 from mmengine import Config
 from mmdet.apis import inference_detector, init_detector
-import cv2
+
 import os
 import json
-import argparse
 import numpy as np
 from glob import glob
-
 from PIL import Image
 
-video_name = "bb_1_020414_vehicle_187_056"
+video_name = "test5"
 
 work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 
@@ -19,10 +17,9 @@ checkpoint_path = work_dir + "Object_Detection/checkpoint/best_coco_bbox_mAP_epo
 input_path = work_dir + "datasets/video_data/" + video_name + "/"
 output_path = work_dir + "datasets/Results/"
 
-def detect_objects(model, image_path, save_path, score_thr=0.3):
+def detect_objects(model, image_path, score_thr=0.3):
     """이미지에서 객체를 검출하고 결과를 JSON으로 저장"""
     # 이미지 읽기
-    img = cv2.imread(image_path)
     img = Image.open(image_path).convert("RGB")  # PIL로 로드
     img = np.array(img)  # OpenCV와 호환되도록 변환
     if img is None:
@@ -85,22 +82,20 @@ def main():
     # 입력이 폴더인지 파일인지 확인
     if os.path.isdir(input_path):
         # 폴더 내 이미지 파일 검색 (jpg, jpeg, png)
-        image_files = glob(os.path.join(input_path, "*.jpg")) + \
-                     glob(os.path.join(input_path, "*.jpeg")) + \
-                     glob(os.path.join(input_path, "*.png"))
+        image_files = glob(os.path.join(input_path, "*.png"))
         
         # 각 이미지에 대해 처리
         for image_path in image_files:
             image_path = image_path.replace("\\", "/")  # 경로 구분자 통일
 
             print(f"처리 중: {image_path}")
-            detections = detect_objects(model, image_path, output_path, score_thr)
+            detections = detect_objects(model, image_path, score_thr)
             if detections:
                 all_detections.extend(detections)
     else:
         # 단일 이미지 파일 처리
         print(f"처리 중: {input_path}")
-        detections = detect_objects(model, input_path, output_path, score_thr)
+        detections = detect_objects(model, input_path, score_thr)
         if detections:
             all_detections.extend(detections)
     

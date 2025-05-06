@@ -37,11 +37,11 @@ pdfmetrics.registerFont(TTFont('MalgunBold', 'C:/Windows/Fonts/malgunbd.ttf'))
 API_KEY = os.getenv("OPEN_API_KEY")
 load_dotenv()
 
-video_name = "bb_1_020414_vehicle_187_056"
+video_name = "test4"
 
 work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 
-pdf_path = work_dir + "datasets/pdf_data/231107_과실비율인정기준_온라인용.pdf"
+pdf_path = work_dir + "LangChain/pdf_data/231107_과실비율인정기준_온라인용.pdf"
 json_path = work_dir + "datasets/results/" + video_name + "_classification.json"
 
 output_dir = work_dir + "/datasets/results/"

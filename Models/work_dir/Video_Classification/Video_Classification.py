@@ -1,30 +1,14 @@
+import numpy as np
+import json
 import torch
 import os
-import os.path as osp
-import re
-from operator import itemgetter
 os.environ["OPENCV_IO_MAX_IMAGE_PIXELS"] = pow(2,40).__str__()
+
 from mmaction.apis import init_recognizer
-from mmcv.runner import set_random_seed
-from mmcv import Config
-from mmaction.apis import single_gpu_test
-from mmaction.datasets import build_dataloader
-from mmcv.parallel import MMDataParallel
-from mmaction.models import build_model
-from mmcv import Config
-from mmaction.core import OutputHook
 from mmaction.datasets.pipelines import Compose
 from mmcv.parallel import collate, scatter
-import numpy as np
-import time
-import cv2
-from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, confusion_matrix
-from sklearn.metrics import classification_report
-import sys
-from datetime import datetime, timedelta
-import json
 
-video_name = "bb_1_020414_vehicle_187_056"
+video_name = "test5"
 
 real_categories_ids_1st = {
     0 : "직선 도로", 1 : "사거리 교차로(신호등 없음)", 2 : "사거리 교차로(신호등 있음)", 3 : "T자형 교차로",

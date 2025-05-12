@@ -8,7 +8,7 @@ from mmaction.apis import init_recognizer
 from mmaction.datasets.pipelines import Compose
 from mmcv.parallel import collate, scatter
 
-video_name = "test5"
+video_name = "test7"
 
 real_categories_ids_1st = {
     0 : "직선 도로", 1 : "사거리 교차로(신호등 없음)", 2 : "사거리 교차로(신호등 있음)", 3 : "T자형 교차로",

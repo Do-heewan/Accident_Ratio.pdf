@@ -1,0 +1,10 @@
+[
+    {
+        "video_path": "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/datasets/video_data/test6/",
+        "video_name": "test6",
+        "accident_place": "직선 도로",
+        "accident_place_feature": "차로 감소 도로 (합류)",
+        "object_A": "일시정지 위반 직진",
+        "object_B": "왼쪽에서 직진"
+    }
+]

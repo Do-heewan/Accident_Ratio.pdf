@@ -4,9 +4,7 @@ import json
 import datetime
 import fitz  # PyMuPDF
 from PIL import Image
-from IPython.display import display
 import io
-import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
 from langchain_community.document_loaders import PyPDFLoader
@@ -33,11 +31,12 @@ from reportlab.pdfbase.ttfonts import TTFont
 pdfmetrics.registerFont(TTFont('Malgun', 'C:/Windows/Fonts/malgun.ttf'))
 pdfmetrics.registerFont(TTFont('MalgunBold', 'C:/Windows/Fonts/malgunbd.ttf'))
 
-# API KEY 정보로드
-API_KEY = os.getenv("OPEN_API_KEY")
 load_dotenv()
 
-video_name = "test4"
+# API KEY 정보로드
+API_KEY = os.getenv("OPEN_API_KEY")
+
+video_name = "test7"
 
 work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 
@@ -53,8 +52,8 @@ def load_mapping_file(file_path):
     
 json_file = load_mapping_file(json_path) # 모델 아웃풋 파일
 
-one = json_file[0]["accident_feature"]
-two = json_file[0]["accident_feature_detail"]
+one = json_file[0]["accident_place"]
+two = json_file[0]["accident_place_feature"]
 three = json_file[0]["object_A"]
 four = json_file[0]["object_B"]
 
@@ -66,14 +65,16 @@ docs = loader.load()
 
 # 단계 2 : 문서 분할
 text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,
-    chunk_overlap=50,
+    chunk_size=300,
+    chunk_overlap=20,
     length_function=len,
 )
 split_documents = text_splitter.split_documents(docs)
 
 # 단계 3 : 임베딩
-embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-small"  # 더 가벼운 모델
+)
 
 # 단계 4 : 벡터 스토어 생성
 vectorstore = FAISS.from_documents(split_documents, embeddings)
@@ -138,10 +139,7 @@ chain = (
     | StrOutputParser()
 )
 
-question = f"""사고 장소 {one} 사고 유형 {two} 사고 객체 A의 진행 방향 {three} 사고 객체 B의 진행 방향 {four}에 해당하는 사고를 찾아줘. 
-            사고명과 사고 번호를 제목으로 하여 알려주고, 기본과실비율과 과실비율 조정 예시를 알려줘
-            기본 과실비율 해설과 함께 수정요소 해설을 포함하여 알려줘.
-            관련 법규와 참고판례를 예시로 함께 알려줘"""
+question = f"""사고 장소 {one} 사고 유형 {two} 사고 객체 A의 진행 방향 {three} 사고 객체 B의 진행 방향 {four}에 해당하는 사고를 찾아줘. """
 
 # 체인 실행(Run Chain)
 # 문서에 대한 질의를 입력하고, 답변과 관련 이미지를 출력합니다.
@@ -150,19 +148,7 @@ response = chain.invoke(question)
 
 ### 보고서 생성
 
-def create_report_pdf(question, response, pdf_images=None, output_filename=None):
-    """
-    LangChain 응답 내용을 기반으로 PDF 보고서를 생성합니다.
-    한글 지원을 위해 말끔 고딕 폰트를 사용합니다.
-    
-    Args:
-        response (str): LangChain의 응답 내용
-        pdf_images (list, optional): PDF에 포함할 이미지 리스트 (PIL Image 객체). Defaults to None.
-        output_filename (str, optional): 출력 파일명. 지정하지 않으면 타임스탬프로 생성됩니다.
-    
-    Returns:
-        str: 생성된 PDF 파일 경로
-    """
+def create_report_pdf(question, response, pdf_image=None, output_filename=None):
     # 출력 디렉토리
     os.makedirs(output_dir, exist_ok=True)
     
@@ -215,6 +201,37 @@ def create_report_pdf(question, response, pdf_images=None, output_filename=None)
     date_paragraph = Paragraph(f"작성일: {date_str}", styles['Normal'])
     elements.append(date_paragraph)
     elements.append(Spacer(1, 0.25*inch))
+
+    if pdf_image:
+        # 이미지 추가
+        # PIL 이미지를 ReportLab 이미지로 변환
+        img_buffer = BytesIO()
+        pdf_image.save(img_buffer, format='PNG')
+        img_data = img_buffer.getvalue()
+        img_buffer.close()
+        
+        # 페이지에 맞는 적절한 이미지 크기 계산
+        # 여유 공간 계산 (제목, 날짜, 답변 등이 차지하는 공간 고려)
+        text_content_height = 4.5 * inch  # 대략적인 텍스트 내용 높이 예상값
+        available_height = letter[1] - 2*72 - text_content_height  # 페이지 높이 - 상하 여백 - 텍스트 내용
+        
+        # 이미지 크기 조정 (너비와 높이 제한)
+        max_width = 5 * inch  # 페이지 너비를 고려한 최대 이미지 너비 (기존 6인치에서 줄임)
+        max_height = available_height - 0.5 * inch  # 약간의 추가 여유 공간
+        
+        # 원본 비율 유지하면서 크기 제한
+        img_width = min(pdf_image.width, max_width)
+        img_height = (pdf_image.height * img_width) / pdf_image.width
+        
+        # 높이가 제한을 초과하면 높이 기준으로 다시 계산
+        if img_height > max_height:
+            img_height = max_height
+            img_width = (pdf_image.width * img_height) / pdf_image.height
+        
+        # 이미지 추가
+        img_obj = ReportImage(BytesIO(img_data), width=img_width, height=img_height)
+        elements.append(img_obj)
+        elements.append(Spacer(1, 0.15*inch))
     
     # # 질문 섹션
     # elements.append(Paragraph("질문:", styles['MyHeading']))
@@ -224,33 +241,10 @@ def create_report_pdf(question, response, pdf_images=None, output_filename=None)
     # elements.append(Spacer(1, 0.25*inch))
     
     # 답변 섹션
-    elements.append(Paragraph("답변:", styles['MyHeading']))
     # 줄바꿈을 HTML <br/>로 대체
     formatted_response = response.replace('\n', '<br/>')
     elements.append(Paragraph(formatted_response, styles['MyNormal']))
     elements.append(Spacer(1, 0.25*inch))
-    
-    # 이미지 추가
-    if pdf_images:
-        elements.append(Paragraph("관련 이미지:", styles['MyHeading']))
-        for i, img in enumerate(pdf_images, 1):
-            # PIL 이미지를 ReportLab 이미지로 변환
-            img_buffer = BytesIO()
-            img.save(img_buffer, format='PNG')
-            img_data = img_buffer.getvalue()
-            img_buffer.close()
-            
-            # 이미지 크기 조정 (너비 기준, 높이 자동 계산)
-            max_width = 6 * inch  # 페이지 너비를 고려한 최대 이미지 너비
-            img_width = min(img.width, max_width)
-            img_height = (img.height * img_width) / img.width
-            
-            # 이미지 추가
-            img_obj = ReportImage(BytesIO(img_data), width=img_width, height=img_height)
-            elements.append(img_obj)
-            elements.append(Spacer(1, 0.15*inch))
-            elements.append(Paragraph(f"이미지 {i}", styles['MyNormal']))
-            elements.append(Spacer(1, 0.25*inch))
     
     # PDF 생성
     doc.build(elements)
@@ -261,28 +255,33 @@ def create_report_pdf(question, response, pdf_images=None, output_filename=None)
 # 이미지 가져오기
 def get_relevant_images(pdf_path, response):
     """LangChain 응답과 관련된 이미지들을 추출합니다."""
-    relevant_docs = vectorstore.similarity_search(response, k=3)
-    relevant_pages = [doc.metadata.get('page', 0) for doc in relevant_docs]
-    images = []
+    relevant_docs = vectorstore.similarity_search(response, k=1)
+
+    page_num = relevant_docs[0].metadata.get('page', 0)  # 첫 번째 문서의 페이지 번호를 사용
     
     doc = fitz.open(pdf_path)
-    for page_num in relevant_pages:
-        page = doc[page_num]
-        image_list = page.get_images(full=True)
+    page = doc[page_num]
+    image_list = page.get_images(full=True)
         
-        if image_list:  # 이미지가 있는 경우에만
-            xref = image_list[0][0]  # 첫 번째 이미지 사용
-            base_image = doc.extract_image(xref)
-            image_bytes = base_image["image"]
-            image = Image.open(io.BytesIO(image_bytes))
-            images.append(image)
-            
-    return images
+    if not image_list:  # 이미지가 있는 경우에만
+        return None
+    
+    xref = image_list[0][0]  # 첫 번째 이미지 사용
+    base_image = doc.extract_image(xref)
+    image_bytes = base_image["image"]
+    image = Image.open(io.BytesIO(image_bytes))
+    
+    if image:
+        print(f"✅ 관련 이미지가 추출되었습니다: {image_list[0]}")
+
+    return image
 
 # 보고서 생성
-def generate_accident_report():
+def generate_accident_report(pdf_path, response):
+    pdf_path = pdf_path
+    response = response
     # 이미지 가져오기
-    # pdf_images = get_relevant_images(pdf_path, response)
+    pdf_image = get_relevant_images(pdf_path, response)
     
     # 타이틀에 사고 정보 포함
     report_title = f"사고분석_{one}_{two}.pdf"
@@ -291,11 +290,11 @@ def generate_accident_report():
     pdf_path = create_report_pdf(
         question=question,
         response=response,
-        #pdf_images=pdf_images,
+        pdf_image=pdf_image,
         output_filename=report_title
     )
     
     return pdf_path
 
 # 보고서 생성 실행
-report_file = generate_accident_report()
+report_file = generate_accident_report(pdf_path, response)

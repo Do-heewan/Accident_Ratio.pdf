@@ -3,7 +3,7 @@ import os
 from tqdm import tqdm
 from PIL import Image  # PIL Image 모듈 추가
 
-video_name = "test5.mp4"
+video_name = "test7.mp4"
 
 video_path = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/datasets/Video_Data/"
 

@@ -8,7 +8,7 @@ from mmaction.apis import init_recognizer
 from mmaction.datasets.pipelines import Compose
 from mmcv.parallel import collate, scatter
 
-video_name = "test7"
+video_name = "test5"
 
 real_categories_ids_1st = {
     0 : "직선 도로", 1 : "사거리 교차로(신호등 없음)", 2 : "사거리 교차로(신호등 있음)", 3 : "T자형 교차로",
@@ -147,7 +147,7 @@ def directory_classifier_restrict_1(data_dir, num_class = 15):
         cluster_dict[key] = one_hot_label
     return cluster_dict
 
-def directory_classifier_restrict_2(data_dir, num_class = 60):
+def directory_classifier_restrict_2(data_dir, num_class = 61):
     txt_constrict = 'Classifier_restrict_vector_2nd.txt'
     txt_name_constrict = os.path.join(data_dir, txt_constrict)
     constrict = open(txt_name_constrict, 'r')
@@ -165,7 +165,7 @@ def directory_classifier_restrict_2(data_dir, num_class = 60):
         cluster_dict[key] = one_hot_label
     return cluster_dict
 
-def directory_classifier_restrict_3(data_dir, num_class = 165):
+def directory_classifier_restrict_3(data_dir, num_class = 180):
     txt_constrict = 'Classifier_restrict_vector_3rd.txt'
     txt_name_constrict = os.path.join(data_dir, txt_constrict)
     constrict = open(txt_name_constrict, 'r')
@@ -183,7 +183,7 @@ def directory_classifier_restrict_3(data_dir, num_class = 165):
         cluster_dict[key] = one_hot_label
     return cluster_dict
 
-def directory_classifier_restrict_4(data_dir, num_class = 152):
+def directory_classifier_restrict_4(data_dir, num_class = 174):
     txt_constrict = 'Classifier_restrict_vector_4th.txt'
     txt_name_constrict = os.path.join(data_dir, txt_constrict)
     constrict = open(txt_name_constrict, 'r')
@@ -200,6 +200,82 @@ def directory_classifier_restrict_4(data_dir, num_class = 152):
 
         cluster_dict[key] = one_hot_label
     return cluster_dict
+
+# 수정된 부분: 클러스터 제약 조건을 활용한 최종 결과 도출
+def get_constrained_prediction(scores_1, scores_2, scores_3, scores_4, cluster_dict_1, cluster_dict_2, cluster_dict_3, cluster_dict_4):
+    # 1단계 예측
+    pred_class_id_1 = np.argmax(scores_1)
+    pred_prob_1 = np.max(scores_1)
+    
+    # 1단계 결과에 따른 2단계 제약 조건 적용
+    valid_classes_2 = {}
+    for i in range(len(scores_2)):
+        key = f"{pred_class_id_1}"
+        if key in cluster_dict_1:
+            # 유효한 클래스에 대한 확률 저장
+            if cluster_dict_1[key][i] == 1:
+                valid_classes_2[i] = scores_2[i]
+    
+    # 2단계 예측 (제약 조건 적용)
+    valid_indices_2 = list(valid_classes_2.keys())
+    valid_scores_2 = np.array([valid_classes_2[i] for i in valid_indices_2])
+    if len(valid_indices_2) > 0:
+        local_max_idx = np.argmax(valid_scores_2)
+        pred_class_id_2 = valid_indices_2[local_max_idx]
+        pred_prob_2 = valid_scores_2[local_max_idx]
+    else:
+        # 제약 조건에 맞는 클래스가 없으면 원래 예측 사용
+        pred_class_id_2 = np.argmax(scores_2)
+        pred_prob_2 = np.max(scores_2)
+    
+    # 1,2단계 결과에 따른 3단계 제약 조건 적용
+    valid_classes_3 = {}
+    for i in range(len(scores_3)):
+        key = f"{pred_class_id_1}{pred_class_id_2}"
+        if key in cluster_dict_2:
+            if cluster_dict_2[key][i] == 1:
+                valid_classes_3[i] = scores_3[i]
+    
+    # 3단계 예측 (제약 조건 적용)
+    valid_indices_3 = list(valid_classes_3.keys())
+    valid_scores_3 = np.array([valid_classes_3[i] for i in valid_indices_3])
+    if len(valid_indices_3) > 0:
+        local_max_idx = np.argmax(valid_scores_3)
+        pred_class_id_3 = valid_indices_3[local_max_idx]
+        pred_prob_3 = valid_scores_3[local_max_idx]
+    else:
+        pred_class_id_3 = np.argmax(scores_3)
+        pred_prob_3 = np.max(scores_3)
+    
+    # 1,2,3단계 결과에 따른 4단계 제약 조건 적용
+    valid_classes_4 = {}
+    for i in range(len(scores_4)):
+        key = f"{pred_class_id_1}{pred_class_id_2}{pred_class_id_3}"
+        if key in cluster_dict_3:
+            if cluster_dict_3[key][i] == 1:
+                valid_classes_4[i] = scores_4[i]
+    
+    # 4단계 예측 (제약 조건 적용)
+    valid_indices_4 = list(valid_classes_4.keys())
+    valid_scores_4 = np.array([valid_classes_4[i] for i in valid_indices_4])
+    if len(valid_indices_4) > 0:
+        local_max_idx = np.argmax(valid_scores_4)
+        pred_class_id_4 = valid_indices_4[local_max_idx]
+        pred_prob_4 = valid_scores_4[local_max_idx]
+    else:
+        pred_class_id_4 = np.argmax(scores_4)
+        pred_prob_4 = np.max(scores_4)
+    
+    return {
+        'class_id_1': int(pred_class_id_1),
+        'prob_1': float(pred_prob_1),
+        'class_id_2': int(pred_class_id_2),
+        'prob_2': float(pred_prob_2),
+        'class_id_3': int(pred_class_id_3),
+        'prob_3': float(pred_prob_3),
+        'class_id_4': int(pred_class_id_4),
+        'prob_4': float(pred_prob_4)
+    }
 
 def softmax(x):
     f_x = np.exp(x) / np.sum(np.exp(x))
@@ -250,11 +326,6 @@ video_path = work_dir + "datasets/video_data/" + video_name + "/" # Video path
 
 cluster_path = work_dir + "video_classification/classifier/" # Classifier path
 
-cluster_dict_1 = directory_classifier_restrict_1(cluster_path) # Classifier 1
-cluster_dict_2 = directory_classifier_restrict_2(cluster_path) # Classifier 2
-cluster_dict_3 = directory_classifier_restrict_3(cluster_path) # Classifier 3
-cluster_dict_4 = directory_classifier_restrict_4(cluster_path) # Classifier 4
-
 model_path =  work_dir + "video_classification/models/" # Model path
 
 # Classifier 1
@@ -273,36 +344,69 @@ checkpoint_path_3 = model_path + '/For3_view1/for3_view1.pth'
 config_path_4 = model_path + "/For4_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
 checkpoint_path_4 = model_path + '/For4_view1/for4_view1.pth'
 
+# 분류기 별 클러스터 지정
+cluster_dict_1 = directory_classifier_restrict_1(cluster_path) # Classifier 1
+cluster_dict_2 = directory_classifier_restrict_2(cluster_path) # Classifier 2
+cluster_dict_3 = directory_classifier_restrict_3(cluster_path) # Classifier 3
+cluster_dict_4 = directory_classifier_restrict_4(cluster_path) # Classifier 4
+
+# 모델 초기화
 model_1 = init_recognizer(config_path_1, checkpoint_path_1, device='cpu', use_frames=True)
 model_2 = init_recognizer(config_path_2, checkpoint_path_2, device='cpu', use_frames=True)
 model_3 = init_recognizer(config_path_3, checkpoint_path_3, device='cpu', use_frames=True)
 model_4 = init_recognizer(config_path_4, checkpoint_path_4, device='cpu', use_frames=True)
 
+# 사고 분류 추론
 cls_scores_1, cls_scores_softmax_1 = inference_recognizer(model_1, video_path, outputs='cls_score', as_tensor=True)
 cls_scores_2, cls_scores_softmax_2 = inference_recognizer(model_2, video_path, outputs='cls_score', as_tensor=True)
 cls_scores_3, cls_scores_softmax_3 = inference_recognizer(model_3, video_path, outputs='cls_score', as_tensor=True)
 cls_scores_4, cls_scores_softmax_4 = inference_recognizer(model_4, video_path, outputs='cls_score', as_tensor=True)
 
-results = []
+# 제약 조건을 고려한 예측 결과 도출
+prediction = get_constrained_prediction(
+    cls_scores_softmax_1, 
+    cls_scores_softmax_2, 
+    cls_scores_softmax_3, 
+    cls_scores_softmax_4,
+    cluster_dict_1,
+    cluster_dict_2,
+    cluster_dict_3,
+    cluster_dict_4
+)
 
-pred_class_id_1 = np.argmax(cls_scores_softmax_1)
-pred_class_id_2 = np.argmax(cls_scores_softmax_2)
-pred_class_id_3 = np.argmax(cls_scores_softmax_3)
-pred_class_id_4 = np.argmax(cls_scores_softmax_4)
+# 결과 추출
+pred_class_id_1 = prediction['class_id_1']
+pred_class_id_2 = prediction['class_id_2']
+pred_class_id_3 = prediction['class_id_3']
+pred_class_id_4 = prediction['class_id_4']
 
 result_1st = real_categories_ids_1st[pred_class_id_1]
 result_2nd = real_categories_ids_2nd[pred_class_id_2]
 result_3rd = real_categories_ids_3rd[pred_class_id_3]
 result_4th = real_categories_ids_4th[pred_class_id_4]
 
+# 결과 저장 및 출력 확장
+results = []
 results.append({
-        'video_path': video_path,
-        'video_name': video_name,
-        'accident_place': result_1st,
-        'accident_place_feature' : result_2nd,
-        'object_A' : result_3rd,
-        'object_B' : result_4th,
-    })
+    'video_path': video_path,
+    'video_name': video_name,
+    'accident_place': result_1st,
+    'accident_place_feature': result_2nd,
+    'object_A': result_3rd,
+    'object_B': result_4th,
+})
+
+# 결과 출력 형식 개선
+print(f"\n===== 분석 결과: {video_name} =====")
+print(f"사고 장소: {result_1st} (신뢰도: {prediction['prob_1']:.2f})")
+print(f"사고 특성: {result_2nd} (신뢰도: {prediction['prob_2']:.2f})")
+print(f"객체 A 행동: {result_3rd} (신뢰도: {prediction['prob_3']:.2f})")
+print(f"객체 B 행동: {result_4th} (신뢰도: {prediction['prob_4']:.2f})")
+print("================================\n")
+# print(f"1번 신뢰도 : {cls_scores_softmax_1}")
+# print(f"2번 신뢰도 : {cls_scores_softmax_2}")
+# print(f"3번 신뢰도 : {cls_scores_softmax_3}")
+# print(f"4번 신뢰도 : {cls_scores_softmax_4}")
 
 print(f"{video_name} : {results[0]['accident_place']}, {results[0]['accident_place_feature']}, {results[0]['object_A']}, {results[0]['object_B']}")
 

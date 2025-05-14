@@ -40,15 +40,17 @@ model = dict(
     cls_head=dict(
         type='SlowFastHead',
         in_channels=2304,
-        num_classes=15,
+        num_classes=60,
         spatial_type='avg',
-        dropout_ratio=0.5))
+        dropout_ratio=0.5),
+    train_cfg=None,
+    test_cfg=dict(average_clips=None))
 dataset_type = 'RawframeDataset'
 data_root = '/workspace/DATASET/Tmax/CarAccident/view1'
 data_root_val = '/workspace/DATASET/Tmax/CarAccident/view1'
-ann_file_train = '/home/mnt/s3/View1/train_1st_view1.txt'
-ann_file_val = '/home/mnt/s3/View1/val_1st_view1.txt'
-ann_file_test = '/home/mnt/s3/View1/val_1st_view1.txt'
+ann_file_train = '/mnt/ext3/View3/train_2nd_view3.txt'
+ann_file_val = '/mnt/ext3/View3/val_2nd_view3.txt'
+ann_file_test = '/mnt/ext3/View3/val_2nd_view3.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 clip_len_setting = 32
@@ -115,7 +117,7 @@ data = dict(
     workers_per_gpu=4,
     train=dict(
         type='RawframeDataset',
-        ann_file='/home/mnt/s3/View1/train_1st_view1.txt',
+        ann_file='/mnt/ext3/View3/train_2nd_view3.txt',
         data_prefix='/workspace/DATASET/Tmax/CarAccident/view1',
         pipeline=[
             dict(
@@ -140,7 +142,7 @@ data = dict(
         ]),
     val=dict(
         type='RawframeDataset',
-        ann_file='/home/mnt/s3/View1/val_1st_view1.txt',
+        ann_file='/mnt/ext3/View3/val_2nd_view3.txt',
         data_prefix='/workspace/DATASET/Tmax/CarAccident/view1',
         pipeline=[
             dict(
@@ -164,7 +166,7 @@ data = dict(
         ]),
     test=dict(
         type='RawframeDataset',
-        ann_file='/home/mnt/s3/View1/val_1st_view1.txt',
+        ann_file='/mnt/ext3/View3/val_2nd_view3.txt',
         data_prefix='/workspace/DATASET/Tmax/CarAccident/view1',
         pipeline=[
             dict(
@@ -187,8 +189,11 @@ data = dict(
             dict(type='ToTensor', keys=['imgs', 'masks', 'label'])
         ]))
 evaluation = dict(
-    interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'], top_k=(1, ))
-optimizer = dict(type='SGD', lr=0.002, momentum=0.9, weight_decay=0.0001)
+    interval=1,
+    metrics=['top_k_accuracy', 'mean_class_accuracy'],
+    top_k=(1, ),
+    best_ckpt_name='best.pth')
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(
     policy='CosineAnnealing',
@@ -196,8 +201,8 @@ lr_config = dict(
     warmup='linear',
     warmup_by_epoch=True,
     warmup_iters=1)
-total_epochs = 20
-work_dir = './work_dirs/For1_view1'
+total_epochs = 25
+work_dir = 'mnt/ext3/server1/For2_view3'
 find_unused_parameters = False
 gpu_ids = range(0, 4)
 omnisource = False

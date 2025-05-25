@@ -26,7 +26,6 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import PageBreak
 
-
 # 한글 폰트 등록
 # Windows에 설치된 기본 한글 폰트 사용
 pdfmetrics.registerFont(TTFont('Malgun', 'C:/Windows/Fonts/malgun.ttf'))

@@ -24,6 +24,7 @@ from reportlab.lib.units import inch
 from reportlab.lib import colors
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus import PageBreak
 
 
 # 한글 폰트 등록
@@ -36,11 +37,13 @@ load_dotenv()
 # API KEY 정보로드
 API_KEY = os.getenv("OPEN_API_KEY")
 
-video_name = "test7"
+video_name = "bb_1_220122_vehicle_229_34825"
 
 work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 
-pdf_path = work_dir + "LangChain/pdf_data/231107_과실비율인정기준_온라인용.pdf"
+accident_ratio_pdf_path = work_dir + "LangChain/pdf_data/231107_과실비율인정기준_온라인용.pdf"
+traffic_law_pdf_path = work_dir + "LangChain/pdf_data/도로교통법.pdf"
+
 json_path = work_dir + "datasets/results/" + video_name + "_classification.json"
 
 output_dir = work_dir + "/datasets/results/"
@@ -58,10 +61,13 @@ three = json_file[0]["object_A"]
 four = json_file[0]["object_B"]
 
 ### 랭체인 실행
-
+print("랭체인을 실행합니다...")
 # 단계 1 : 문서 로드
-loader = PyPDFLoader(pdf_path)
+loader = PyPDFLoader(accident_ratio_pdf_path)
 docs = loader.load()
+
+traffic_loader = PyPDFLoader(traffic_law_pdf_path)
+traffic_docs = traffic_loader.load()
 
 # 단계 2 : 문서 분할
 text_splitter = RecursiveCharacterTextSplitter(
@@ -70,6 +76,7 @@ text_splitter = RecursiveCharacterTextSplitter(
     length_function=len,
 )
 split_documents = text_splitter.split_documents(docs)
+split_traffic_documents = text_splitter.split_documents(traffic_docs)
 
 # 단계 3 : 임베딩
 embeddings = OpenAIEmbeddings(
@@ -78,42 +85,47 @@ embeddings = OpenAIEmbeddings(
 
 # 단계 4 : 벡터 스토어 생성
 vectorstore = FAISS.from_documents(split_documents, embeddings)
+traffic_vectorstore = FAISS.from_documents(split_traffic_documents, embeddings)
 
 # 단계 5 : 검색기 생성
 retriever = vectorstore.as_retriever()
+traffic_retriever = traffic_vectorstore.as_retriever()
 
 # 단계 6 : 프롬프트 생성
 prompt = PromptTemplate.from_template(
     """
     당신은 교통사고 분석 전문가입니다.
     사용자 질문과 문서 내용을 바탕으로 다음과 같은 구조로 사고 정보를 정리해주세요.
+    ~~ 입니다. ~~ 답변 드리겠습니다. 등의 답변은 하지 마세요.
 
-    [사건정보]
-    사건분류: (예: 차대 보행자 / 차대 이륜차 / 차대 자전거 / 차대차)
+    사고유형번호에 대해 물어보면 예시와 동일한 유형의 사고유형 번호를 알려주세요. 없으면 답하지 마세요. (예시 : 차15-1, 보9 등)
+
+    사건정보에 대해 물어보면 다음과 같은 형식으로 답변해주세요. :
+    [사건분류: (예: 차대 보행자 / 차대 이륜차 / 차대 자전거 / 차대차)
     사고장소: (도로 형태 또는 사고 발생 지점 요약)
     객체 A 상태: (행동/위치/신호 상태 등)
     객체 B 상태: (행동/위치/신호 상태 등)
-    사고유형번호: (예: 보9, 차15-1 등)
 
-    사고 상황: (구체적으로 서술해주세요. 예: 신호등이 있는 교차로에서 보행자가 신호를 무시하고 횡단보도를 건너는 상황)
+    사고 상황: (구체적으로 서술해주세요. 예: 신호등이 있는 교차로에서 보행자가 신호를 무시하고 횡단보도를 건너는 상황)]
 
-    [기본 과실비율]
-    사고유형에 따라 적용되는 기본 과실비율을 정리해주세요.
+    기본 과실비율에 대해 물어보면 다음과 같은 형식으로 답변해주세요. :
+    [기본 과실비율 : (예: A50:B50 / A70:B30)]
 
-    [과실비율 조정 요소]
-    사고 발생에 따라 적용 가능한 가감 요소를 아래와 같이 정리해주세요.
-    항목과 수치를 문서에서 찾을 수 있을 경우 구체적으로 적어주세요.
-    예: 야간 시야장애: +10%, 어린이 보호구역: -15% 등
+    과실 비율 조정 요소에 대해 물어보면 다음과 같은 형식으로 답변해주세요. :
+    사고 발생에 따라 적용 가능한 가감 요소를 정리해주고, 문서에서 찾을 수 있는 항목과 수치만을 구체적으로 적어주세요.
 
-    [관련 법률]
-    문서에 명시된 관련 법령이 있다면 조문 번호와 함께 정리해주세요.
-    예: 도로교통법 제5조 (신호 또는 지시에 따를 의무)
+    관련 법률에 대해 물어보면 다음과 같은 형식으로 답변해주세요. :
+    [관련 법률 : (예: 도로교통법 제5조 (신호 또는 지시에 따를 의무))]
 
-    [참고 판례]
-    해당 사고유형과 관련된 판례가 있는 경우 아래 형식으로 제시해주세요.
-    - 법원명 / 선고일 / 사건번호
+    참고 판례에 대해 물어보면 다음과 같은 형식으로 답변해주세요. :
+    - 법원명 : 
+    - 선고일 :
+    - 사건번호
     - 핵심 내용 요약
     - 과실비율 요약 (있다면)
+
+    사고 요약에 대해 물어보면 다음과 같은 형식으로 답변해주세요. :
+    [사고 요약 : (사고 유형, 장소, 객체 A와 B의 상태)]
 
     질문:
     {question}
@@ -139,18 +151,115 @@ chain = (
     | StrOutputParser()
 )
 
-question = f"""사고 장소 {one} 사고 유형 {two} 사고 객체 A의 진행 방향 {three} 사고 객체 B의 진행 방향 {four}에 해당하는 사고를 찾아줘. """
+accident = f"사고 장소 {one} 사고 유형 {two} 사고 객체 A의 진행 방향 {three} 사고 객체 B의 진행 방향 {four}에 해당하는 사고"
 
-# 체인 실행(Run Chain)
-# 문서에 대한 질의를 입력하고, 답변과 관련 이미지를 출력합니다.
-question = question
-response = chain.invoke(question)
+questions = [accident + "의 사고유형번호는?",
+            accident + "의 사건정보는?",
+            accident + "의 기본 과실 비율은?",
+            accident + "의 과실 비율 조정 요소는?",
+            accident + "의 관련 법률은?",
+            accident + "의 참고 판례는?",
+            accident + "요약 정리"
+            ]
+
+res = []
+for i, question in enumerate(questions):
+    # 질문에 변수를 삽입합니다.
+    question = question.format(one=one, two=two, three=three, four=four)
+    
+    # 질문을 체인에 전달하여 답변을 생성합니다.
+    print(f"{i+1}번째 질문에 대한 답변 생성 중입니다...")
+    response = chain.invoke(question)
+    res.append(response)
+
+print("✅답변 생성 완료")
+
+
+print("쟁점 분석을 시작합니다...")
+summary = res[6]
+issue_prompt = PromptTemplate.from_template(
+    '''
+    다음은 교통사고 분석 보고서입니다.
+    사용자 질문과 문서 내용을 바탕으로 다음과 같은 구조로 사고 정보를 정리해주세요.
+    ~~ 입니다. ~~ 답변 드리겠습니다. 등의 답변은 하지 마세요.
+    
+    주요 쟁점에 대해 질문하면 다음과 같이 답변해주세요.
+    [주요 쟁점 : 사고에서 핵심적으로 판단해야 할 포인트와 과실비율 산정에 영향을 줄 수 있는 주요 쟁점을 서술해 주세요.]
+    
+    결정 근거에 대해 질문하면 다음과 같이 답변해주세요.
+    [결정 근거 : 사고의 판단에 영향을 미친 요소들과 판단 근거, 판단의 주요 논리를 서술해 주세요.]
+    
+    법률 키워드에 대해 질문하면 다음과 같이 답변해주세요.
+    [법률 키워드 : 사고의 법률적 해석 및 판단에 중요한 핵심 키워드를 3~5개 추출해 주세요. 예: 선진입 우선, 진로변경, 교차로 통행 우선, 신호위반, 우측차 우선 등]
+
+    분석 요약:
+    {analysis}
+    '''
+)
+
+issue_chain = (
+    {"analysis": RunnablePassthrough()}
+    | issue_prompt
+    | llm
+    | StrOutputParser()
+)
+
+questions = [summary + "의 주요 쟁점은 무엇인가요?",
+            summary + "의 결정 근거는 무엇인가요?",
+            summary + "의 법률 키워드는 무엇인가요?"]
+
+summary_res = []
+for i, question in enumerate(questions):
+    # 질문에 변수를 삽입합니다.
+    question = question.format(summary=summary)
+    
+    # 질문을 체인에 전달하여 답변을 생성합니다.
+    print(f"{i+1}번째 질문에 대한 답변 생성 중입니다...")
+    response = issue_chain.invoke(question)
+    summary_res.append(response)
+
+print("✅쟁점 답변 생성 완료")
+
+print("관련 법률 조항을 검색합니다...")
+law_prompt = PromptTemplate.from_template(
+    '''
+    다음은 교통사고 분석 결과입니다. 관련 도로교통법 조항을 아래 형식으로 2~3개 선정하여 설명하세요.
+
+    사고:
+    {question}
+
+    [참고 문서]
+    --------------------
+    {law_context}
+    --------------------
+
+    🔹 각 조항은 아래 형식으로 작성해 주세요:
+    제13조 제1항:
+    "모든 차의 운전자는 ..."
+    ➞  ... 상황에 적용되며, 이 사건에서는 ... 이유로 판단됨.
+
+    ✳️ 유사 적용 가능한 조항이 있다면 추가로 간단히 설명해 주세요.
+    '''
+)
+
+related_law_chain = (
+    {"law_context": traffic_retriever, "question": RunnablePassthrough()}
+    | law_prompt
+    | llm
+    | StrOutputParser()
+)
+
+traffic_response = related_law_chain.invoke(summary)
+print("✅관련 법률 조항 검색 완료")
 
 ### 보고서 생성
-
-def create_report_pdf(question, response, pdf_image=None, output_filename=None):
+def create_report_pdf(response, summary, traffic_response, output_filename=None):
     # 출력 디렉토리
     os.makedirs(output_dir, exist_ok=True)
+
+    res = response
+    summary_res = summary
+    traffic_response = traffic_response
     
     # 파일명 생성 (지정되지 않은 경우 타임스탬프 사용)
     if not output_filename:
@@ -167,26 +276,35 @@ def create_report_pdf(question, response, pdf_image=None, output_filename=None):
     # 스타일 설정 - 기존 스타일 가져오기
     styles = getSampleStyleSheet()
     
-    # 기존 스타일 수정 (한글 폰트 적용)
+    # 대제목 스타일 수정 (한글 폰트 적용)
     styles['Title'].fontName = 'MalgunBold'
     styles['Title'].alignment = 1  # 가운데 정렬
     styles['Title'].fontSize = 16
     styles['Title'].spaceAfter = 12
+
+    # 중제목
+    styles['Heading1'].fontName = 'MalgunBold'
+    styles['Heading1'].fontSize = 14
     
     # Normal 스타일도 한글 폰트로 수정
     styles['Normal'].fontName = 'Malgun'
     styles['Normal'].fontSize = 11
-    
+
     # 새 스타일 추가 (한글 폰트 적용)
-    styles.add(ParagraphStyle(name='MyHeading',
+    styles.add(ParagraphStyle(name='DateStyle',
                               fontName='MalgunBold',
-                              fontSize=14,
-                              spaceAfter=6))
-    
-    styles.add(ParagraphStyle(name='MyNormal',
-                              fontName='Malgun',
                               fontSize=11,
-                              leading=14))  # 줄 간격
+                              alignment=2))  # 오른쪽 정렬
+    
+    styles.add(ParagraphStyle(name='img_name',
+                              fontName='Malgun',
+                              fontSize=9,
+                              alignment=1))  # 가운데 정렬
+    
+    styles.add(ParagraphStyle(name='acc_ratio',
+                              fontName='MalgunBold',
+                              fontSize=20,
+                              alignment=1))  # 가운데 정렬
     
     # 문서 내용
     elements = []
@@ -198,52 +316,113 @@ def create_report_pdf(question, response, pdf_image=None, output_filename=None):
     
     # 날짜 추가
     date_str = datetime.datetime.now().strftime("%Y년 %m월 %d일")
-    date_paragraph = Paragraph(f"작성일: {date_str}", styles['Normal'])
+    date_paragraph = Paragraph(f"작성일: {date_str}", styles['DateStyle'])
     elements.append(date_paragraph)
     elements.append(Spacer(1, 0.25*inch))
 
-    if pdf_image:
-        # 이미지 추가
-        # PIL 이미지를 ReportLab 이미지로 변환
-        img_buffer = BytesIO()
-        pdf_image.save(img_buffer, format='PNG')
-        img_data = img_buffer.getvalue()
-        img_buffer.close()
-        
-        # 페이지에 맞는 적절한 이미지 크기 계산
-        # 여유 공간 계산 (제목, 날짜, 답변 등이 차지하는 공간 고려)
-        text_content_height = 4.5 * inch  # 대략적인 텍스트 내용 높이 예상값
-        available_height = letter[1] - 2*72 - text_content_height  # 페이지 높이 - 상하 여백 - 텍스트 내용
-        
-        # 이미지 크기 조정 (너비와 높이 제한)
-        max_width = 5 * inch  # 페이지 너비를 고려한 최대 이미지 너비 (기존 6인치에서 줄임)
-        max_height = available_height - 0.5 * inch  # 약간의 추가 여유 공간
-        
-        # 원본 비율 유지하면서 크기 제한
-        img_width = min(pdf_image.width, max_width)
-        img_height = (pdf_image.height * img_width) / pdf_image.width
-        
-        # 높이가 제한을 초과하면 높이 기준으로 다시 계산
-        if img_height > max_height:
-            img_height = max_height
-            img_width = (pdf_image.width * img_height) / pdf_image.height
-        
-        # 이미지 추가
-        img_obj = ReportImage(BytesIO(img_data), width=img_width, height=img_height)
-        elements.append(img_obj)
-        elements.append(Spacer(1, 0.15*inch))
-    
-    # # 질문 섹션
-    # elements.append(Paragraph("질문:", styles['MyHeading']))
-    # # 줄바꿈을 HTML <br/>로 대체
-    # formatted_question = question.replace('\n', '<br/>')
-    # elements.append(Paragraph(formatted_question, styles['MyNormal']))
-    # elements.append(Spacer(1, 0.25*inch))
+    # 기본 정보 입력란
+    basic_info_title = Paragraph("[사고 발생 정보]", styles['Heading1'])
+    elements.append(basic_info_title)
+    basic_info = Paragraph("사고 발생일 : <br/> 사고 지점 : ", styles['Normal'])
+    elements.append(basic_info)
+    elements.append(Spacer(1, 0.5*inch))
     
     # 답변 섹션
+    acc_num = res[0].replace("사고유형번호: ", "")
+    acc_info = res[1].replace("[", "").replace("]", "")
+    basic_ratio = res[2][11:18]
+    adjust_ratio = res[3].replace("과실 비율 조정 요소:\n\n", "").replace("]", "")
+    related_law = res[4].replace("[관련 법률 : ", "").replace("]", "")
+    reference_case = res[5].replace("[", "").replace("]", "")
+    main_issue = summary_res[0].replace("[주요 쟁점 : ", "").replace("]", "")
+    decision_basis = summary_res[1].replace("[결정 근거 : ", "").replace("]", "")
+    law_keywords = summary_res[2].replace("[법률 키워드 : ", "").replace("]", "").split(", ")
+    traffic_response = traffic_response
+
     # 줄바꿈을 HTML <br/>로 대체
-    formatted_response = response.replace('\n', '<br/>')
-    elements.append(Paragraph(formatted_response, styles['MyNormal']))
+    acc_num_p = Paragraph("<" + acc_num + ">", styles['img_name'])
+    acc_info = Paragraph(acc_info.replace('\n', '<br/>'), styles['Normal'])
+    basic_ratio = Paragraph(basic_ratio, styles['acc_ratio'])
+    adjust_ratio = Paragraph(adjust_ratio.replace('\n', '<br/>'), styles['Normal'])
+    related_law = Paragraph(related_law, styles['Normal'])
+    reference_case = Paragraph(reference_case.replace('\n', '<br/>'), styles['Normal'])
+    main_issue = Paragraph(main_issue, styles['Normal'])
+    decision_basis = Paragraph(decision_basis, styles['Normal'])
+
+    traffic_response = Paragraph(traffic_response.replace('\n', '<br/>'), styles['Normal'])
+
+    # AI 분석 사고 정보 및 상황
+    acc_info_title = Paragraph("[AI 분석 사고 정보 및 상황]", styles['Heading1'])
+    elements.append(acc_info_title)
+    elements.append(acc_info)
+    elements.append(Spacer(1, 0.25*inch))
+
+    # 사고유형에 맞는 이미지 첨부
+    img_dir = os.path.join(work_dir, "LangChain/pdf_images/")
+    image = os.path.join(img_dir, f"{acc_num}.jpeg")
+    if os.path.exists(image):
+        img = Image.open(image)
+        img = img.convert("RGB")
+        img_stream = BytesIO()
+        img.save(img_stream, format="JPEG")
+        img_stream.seek(0)
+        
+        # 이미지 추가
+        report_image = ReportImage(img_stream, width=6*inch, height=4*inch)
+        # report_image = ReportImage(img_stream, width=doc.width, height=doc.width * 0.75)
+        elements.append(report_image)
+        elements.append(Spacer(1, 0.25*inch))
+    else:
+        print(f"❌ 이미지 파일이 존재하지 않습니다: {image}")
+
+    elements.append(acc_num_p)
+    elements.append(Spacer(1, 0.25*inch))
+
+    # ✅ 다음 페이지로 강제 이동
+    elements.append(PageBreak())    
+
+    # AI 분석 기본 과실 비율
+    basic_ratio_title = Paragraph("[AI 분석 기본 과실 비율]", styles['Heading1'])
+    elements.append(basic_ratio_title)
+    elements.append(basic_ratio)
+    elements.append(Spacer(1, 0.5*inch))
+
+    # 과실비율 조정 요소
+    adjust_ratio_title = Paragraph("[AI 분석 과실비율 조정 요소]", styles['Heading1'])
+    elements.append(adjust_ratio_title)
+    elements.append(adjust_ratio)
+    elements.append(Spacer(1, 0.5*inch))
+
+    # 관련 법률
+    related_law_title = Paragraph("[AI 분석 관련 법률]", styles['Heading1'])
+    elements.append(related_law_title)
+    elements.append(related_law)
+    elements.append(Spacer(1, 0.5*inch))
+
+    # 참고 판례
+    reference_case_title = Paragraph("[AI 분석 참고 판례]", styles['Heading1'])
+    elements.append(reference_case_title)
+    elements.append(reference_case)
+    elements.append(Spacer(1, 0.5*inch))
+
+    # 주요 쟁점
+    main_issue_title = Paragraph("[AI 분석 주요 쟁점]", styles['Heading1'])
+    elements.append(main_issue_title)
+    elements.append(main_issue)
+    elements.append(Spacer(1, 0.5*inch))
+
+    # 결정 근거
+    decision_basis_title = Paragraph("[AI 분석 결정 근거]", styles['Heading1'])
+    elements.append(decision_basis_title)
+    elements.append(decision_basis)
+    elements.append(Spacer(1, 0.5*inch))
+
+    # 법률 키워드
+
+    # 도로교통법
+    traffic_response_title = Paragraph("[도로교통법 관련 조항]", styles['Heading1'])
+    elements.append(traffic_response_title)
+    elements.append(traffic_response)
     elements.append(Spacer(1, 0.25*inch))
     
     # PDF 생성
@@ -252,49 +431,23 @@ def create_report_pdf(question, response, pdf_image=None, output_filename=None):
     
     return output_path
 
-# 이미지 가져오기
-def get_relevant_images(pdf_path, response):
-    """LangChain 응답과 관련된 이미지들을 추출합니다."""
-    relevant_docs = vectorstore.similarity_search(response, k=1)
-
-    page_num = relevant_docs[0].metadata.get('page', 0)  # 첫 번째 문서의 페이지 번호를 사용
-    
-    doc = fitz.open(pdf_path)
-    page = doc[page_num]
-    image_list = page.get_images(full=True)
-        
-    if not image_list:  # 이미지가 있는 경우에만
-        return None
-    
-    xref = image_list[0][0]  # 첫 번째 이미지 사용
-    base_image = doc.extract_image(xref)
-    image_bytes = base_image["image"]
-    image = Image.open(io.BytesIO(image_bytes))
-    
-    if image:
-        print(f"✅ 관련 이미지가 추출되었습니다: {image_list[0]}")
-
-    return image
-
 # 보고서 생성
-def generate_accident_report(pdf_path, response):
-    pdf_path = pdf_path
+def generate_accident_report(response, summary_res, traffic_response):
     response = response
-    # 이미지 가져오기
-    pdf_image = get_relevant_images(pdf_path, response)
-    
-    # 타이틀에 사고 정보 포함
-    report_title = f"사고분석_{one}_{two}.pdf"
+    summary_res = summary_res
+    traffic_response = traffic_response
+
+    report_title = f"{video_name}.pdf"
     
     # PDF 보고서 생성
     pdf_path = create_report_pdf(
-        question=question,
         response=response,
-        pdf_image=pdf_image,
+        summary=summary_res,
+        traffic_response=traffic_response,
         output_filename=report_title
     )
     
     return pdf_path
 
 # 보고서 생성 실행
-report_file = generate_accident_report(pdf_path, response)
+report_file = generate_accident_report(res, summary_res, traffic_response)

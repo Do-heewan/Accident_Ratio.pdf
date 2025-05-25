@@ -1,0 +1,10 @@
+[
+    {
+        "video_path": "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/datasets/video_data/bb_1_120410_vehicle_121_156/",
+        "video_name": "bb_1_120410_vehicle_121_156",
+        "accident_place": "직선 도로",
+        "accident_place_feature": "동일폭 도로",
+        "object_A": "오른쪽에서 우회전(선진입)",
+        "object_B": "동시 차로변경(진로변경)"
+    }
+]

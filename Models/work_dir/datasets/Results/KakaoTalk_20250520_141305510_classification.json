@@ -1,0 +1,10 @@
+[
+    {
+        "video_path": "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/datasets/Video_Data/KakaoTalk_20250520_141305510/",
+        "video_name": "KakaoTalk_20250520_141305510",
+        "accident_place": "직선 도로",
+        "accident_place_feature": "차도에서 차도가 아닌 장소로 진입",
+        "object_A": "정체차로에서 대기 중 진로변경(측면 충돌)",
+        "object_B": "직진(측면 충돌)"
+    }
+]

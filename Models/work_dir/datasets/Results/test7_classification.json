@@ -3,7 +3,7 @@
         "video_path": "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/datasets/video_data/test7/",
         "video_name": "test7",
         "accident_place": "직선 도로",
-        "accident_place_feature": "교차로 내 진로변경",
+        "accident_place_feature": "동일폭 도로",
         "object_A": "정체차로에서 대기 중 진로변경(측면 충돌)",
         "object_B": "직진(측면 충돌)"
     }

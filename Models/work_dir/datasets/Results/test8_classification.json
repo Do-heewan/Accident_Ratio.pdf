@@ -1,0 +1,10 @@
+[
+    {
+        "video_path": "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/datasets/video_data/test8/",
+        "video_name": "test8",
+        "accident_place": "직선 도로",
+        "accident_place_feature": "동일폭 도로",
+        "object_A": "후행 직진",
+        "object_B": "선행 진로변경"
+    }
+]

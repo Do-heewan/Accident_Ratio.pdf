@@ -191,13 +191,13 @@ issue_prompt = PromptTemplate.from_template(
     법률 키워드에 대해 질문하면 다음과 같이 답변해주세요.
     [법률 키워드 : 사고의 법률적 해석 및 판단에 중요한 핵심 키워드를 3~5개 추출해 주세요. 예: 선진입 우선, 진로변경, 교차로 통행 우선, 신호위반, 우측차 우선 등]
 
-    분석 요약:
-    {analysis}
+    질문:
+    {question}
     '''
 )
 
 issue_chain = (
-    {"analysis": RunnablePassthrough()}
+    {"question": RunnablePassthrough()}
     | issue_prompt
     | llm
     | StrOutputParser()
@@ -278,7 +278,7 @@ def create_report_pdf(response, summary, traffic_response, output_filename=None)
     # 대제목 스타일 수정 (한글 폰트 적용)
     styles['Title'].fontName = 'MalgunBold'
     styles['Title'].alignment = 1  # 가운데 정렬
-    styles['Title'].fontSize = 16
+    styles['Title'].fontSize = 22
     styles['Title'].spaceAfter = 12
 
     # 중제목
@@ -392,18 +392,6 @@ def create_report_pdf(response, summary, traffic_response, output_filename=None)
     elements.append(adjust_ratio)
     elements.append(Spacer(1, 0.5*inch))
 
-    # 관련 법률
-    related_law_title = Paragraph("[AI 분석 관련 법률]", styles['Heading1'])
-    elements.append(related_law_title)
-    elements.append(related_law)
-    elements.append(Spacer(1, 0.5*inch))
-
-    # 참고 판례
-    reference_case_title = Paragraph("[AI 분석 참고 판례]", styles['Heading1'])
-    elements.append(reference_case_title)
-    elements.append(reference_case)
-    elements.append(Spacer(1, 0.5*inch))
-
     # 주요 쟁점
     main_issue_title = Paragraph("[AI 분석 주요 쟁점]", styles['Heading1'])
     elements.append(main_issue_title)
@@ -416,7 +404,22 @@ def create_report_pdf(response, summary, traffic_response, output_filename=None)
     elements.append(decision_basis)
     elements.append(Spacer(1, 0.5*inch))
 
+    # ✅ 다음 페이지로 강제 이동
+    elements.append(PageBreak())    
+
     # 법률 키워드
+
+    # 관련 법률
+    related_law_title = Paragraph("[AI 분석 관련 법률]", styles['Heading1'])
+    elements.append(related_law_title)
+    elements.append(related_law)
+    elements.append(Spacer(1, 0.5*inch))
+
+    # 참고 판례
+    reference_case_title = Paragraph("[AI 분석 참고 판례]", styles['Heading1'])
+    elements.append(reference_case_title)
+    elements.append(reference_case)
+    elements.append(Spacer(1, 0.5*inch))
 
     # 도로교통법
     traffic_response_title = Paragraph("[도로교통법 관련 조항]", styles['Heading1'])

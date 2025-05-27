@@ -7,7 +7,7 @@ import numpy as np
 from glob import glob
 from PIL import Image
 
-video_name = "test5"
+video_name = "KakaoTalk_20250520_141905751"
 
 work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 
@@ -17,7 +17,7 @@ checkpoint_path = work_dir + "Object_Detection/checkpoint/best_coco_bbox_mAP_epo
 input_path = work_dir + "datasets/video_data/" + video_name + "/"
 output_path = work_dir + "datasets/Results/"
 
-def detect_objects(model, image_path, score_thr=0.3):
+def detect_objects(model, image_path, score_thr=0.5):
     """이미지에서 객체를 검출하고 결과를 JSON으로 저장"""
     # 이미지 읽기
     img = Image.open(image_path).convert("RGB")  # PIL로 로드

@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 from tqdm import tqdm
 
-video_name = "test5"
+video_name = "KakaoTalk_20250520_141905751"
 
 work_dir = "c:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 data_dir = work_dir + "datasets/"

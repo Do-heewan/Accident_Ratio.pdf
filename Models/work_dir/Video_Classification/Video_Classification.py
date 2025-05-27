@@ -8,7 +8,8 @@ from mmaction.apis import init_recognizer
 from mmaction.datasets.pipelines import Compose
 from mmcv.parallel import collate, scatter
 
-video_name = "test5"
+video_name = "bb_1_220122_vehicle_229_34825"
+point_of_view = "1인칭"
 
 real_categories_ids_1st = {
     0 : "직선 도로", 1 : "사거리 교차로(신호등 없음)", 2 : "사거리 교차로(신호등 있음)", 3 : "T자형 교차로",
@@ -322,27 +323,45 @@ def inference_recognizer(model,
     return scores, scores_pro
 
 work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
-video_path = work_dir + "datasets/video_data/" + video_name + "/" # Video path
+video_path = work_dir + "datasets/Video_Data/" + video_name + "/" # Video path
 
 cluster_path = work_dir + "video_classification/classifier/" # Classifier path
 
 model_path =  work_dir + "video_classification/models/" # Model path
 
-# Classifier 1
-config_path_1 = model_path + "/For1_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
-checkpoint_path_1 = model_path + '/For1_view1/for1_view1.pth'
+if (point_of_view == "1인칭"):
+    # Classifier 1
+    config_path_1 = model_path + "/For1_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
+    checkpoint_path_1 = model_path + '/For1_view1/for1_view1.pth'
 
-# Classifier 2
-config_path_2 = model_path + "/For2_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
-checkpoint_path_2 = model_path + '/For2_view1/for2_view1.pth'
+    # Classifier 2
+    config_path_2 = model_path + "/For2_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
+    checkpoint_path_2 = model_path + '/For2_view1/for2_view1.pth'
 
-# Classifier 3
-config_path_3 = model_path + "/For3_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
-checkpoint_path_3 = model_path + '/For3_view1/for3_view1.pth'
+    # Classifier 3
+    config_path_3 = model_path + "/For3_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
+    checkpoint_path_3 = model_path + '/For3_view1/for3_view1.pth'
 
-# Classifier 4
-config_path_4 = model_path + "/For4_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
-checkpoint_path_4 = model_path + '/For4_view1/for4_view1.pth'
+    # Classifier 4
+    config_path_4 = model_path + "/For4_view1/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
+    checkpoint_path_4 = model_path + '/For4_view1/for4_view1.pth'
+
+else:  # 3인칭
+    # Classifier 1
+    config_path_1 = model_path + "/For1_view3/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
+    checkpoint_path_1 = model_path + '/For1_view3/for1_view3.pth'
+
+    # Classifier 2
+    config_path_2 = model_path + "/For2_view3/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
+    checkpoint_path_2 = model_path + '/For2_view3/for2_view3.pth'
+
+    # Classifier 3
+    config_path_3 = model_path + "/For3_view3/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
+    checkpoint_path_3 = model_path + '/For3_view3/for3_view3.pth'
+
+    # Classifier 4
+    config_path_4 = model_path + "/For4_view3/slowfast_r50_4x16x1_256e_kinetics400_rgb.py"
+    checkpoint_path_4 = model_path + '/For4_view3/for4_view3.pth'
 
 # 분류기 별 클러스터 지정
 cluster_dict_1 = directory_classifier_restrict_1(cluster_path) # Classifier 1
@@ -362,23 +381,28 @@ cls_scores_2, cls_scores_softmax_2 = inference_recognizer(model_2, video_path, o
 cls_scores_3, cls_scores_softmax_3 = inference_recognizer(model_3, video_path, outputs='cls_score', as_tensor=True)
 cls_scores_4, cls_scores_softmax_4 = inference_recognizer(model_4, video_path, outputs='cls_score', as_tensor=True)
 
-# 제약 조건을 고려한 예측 결과 도출
-prediction = get_constrained_prediction(
-    cls_scores_softmax_1, 
-    cls_scores_softmax_2, 
-    cls_scores_softmax_3, 
-    cls_scores_softmax_4,
-    cluster_dict_1,
-    cluster_dict_2,
-    cluster_dict_3,
-    cluster_dict_4
-)
+# # 제약 조건을 고려한 예측 결과 도출
+# prediction = get_constrained_prediction(
+#     cls_scores_softmax_1, 
+#     cls_scores_softmax_2, 
+#     cls_scores_softmax_3, 
+#     cls_scores_softmax_4,
+#     cluster_dict_1,
+#     cluster_dict_2,
+#     cluster_dict_3,
+#     cluster_dict_4
+# )
 
-# 결과 추출
-pred_class_id_1 = prediction['class_id_1']
-pred_class_id_2 = prediction['class_id_2']
-pred_class_id_3 = prediction['class_id_3']
-pred_class_id_4 = prediction['class_id_4']
+# # # 결과 추출
+# # pred_class_id_1 = prediction['class_id_1']
+# # pred_class_id_2 = prediction['class_id_2']
+# # pred_class_id_3 = prediction['class_id_3']
+# # pred_class_id_4 = prediction['class_id_4']
+
+pred_class_id_1 = np.argmax(cls_scores_softmax_1)
+pred_class_id_2 = np.argmax(cls_scores_softmax_2)
+pred_class_id_3 = np.argmax(cls_scores_softmax_3)
+pred_class_id_4 = np.argmax(cls_scores_softmax_4)
 
 result_1st = real_categories_ids_1st[pred_class_id_1]
 result_2nd = real_categories_ids_2nd[pred_class_id_2]
@@ -396,13 +420,15 @@ results.append({
     'object_B': result_4th,
 })
 
+print(f"1번 결과 : {pred_class_id_1}, 2번 결과 : {pred_class_id_2}, 3번 결과 : {pred_class_id_3}, 4번 결과 : {pred_class_id_4}")
+
 # 결과 출력 형식 개선
-print(f"\n===== 분석 결과: {video_name} =====")
-print(f"사고 장소: {result_1st} (신뢰도: {prediction['prob_1']:.2f})")
-print(f"사고 특성: {result_2nd} (신뢰도: {prediction['prob_2']:.2f})")
-print(f"객체 A 행동: {result_3rd} (신뢰도: {prediction['prob_3']:.2f})")
-print(f"객체 B 행동: {result_4th} (신뢰도: {prediction['prob_4']:.2f})")
-print("================================\n")
+# print(f"\n===== 분석 결과: {video_name} =====")
+# print(f"사고 장소: {result_1st} (신뢰도: {prediction['prob_1']:.2f})")
+# print(f"사고 특성: {result_2nd} (신뢰도: {prediction['prob_2']:.2f})")
+# print(f"객체 A 행동: {result_3rd} (신뢰도: {prediction['prob_3']:.2f})")
+# print(f"객체 B 행동: {result_4th} (신뢰도: {prediction['prob_4']:.2f})")
+# print("================================\n")
 # print(f"1번 신뢰도 : {cls_scores_softmax_1}")
 # print(f"2번 신뢰도 : {cls_scores_softmax_2}")
 # print(f"3번 신뢰도 : {cls_scores_softmax_3}")

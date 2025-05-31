@@ -36,7 +36,7 @@
 - 법률 및 제도의 빈번한 변경, 법원 판례의 일관성 부족, 해석의 다양성 등의 이유로 과실비율 판정에 어려움.
 - 이들의 문제를 해결하기 위해 AI 과실비율 산정 모델을 개발, 산정된 과실비율을 바탕으로 일반인들도 이해하기 쉬운 사고 요약 보고서 생성 서비스를 기획하게 되었다.
 
-![개발배경](https://github.com/user-attachments/assets/5b5f66e4-fdec-4cd1-aa72-882bb99d0763)
+![개발배경](https://github.com/user-attachments/assets/92e6bfb2-f473-4773-b942-ad84be4fd7a9)
 
 ### 기대 효과
 

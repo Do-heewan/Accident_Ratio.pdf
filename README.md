@@ -69,4 +69,4 @@
 
 ## 3. 시스템 다이어그램
 
-![시스템 다이어그램](https://github.com/user-attachments/assets/1888dd40-991e-4356-ae23-06942e54efb8)
+![시스템 다이어그램](https://github.com/user-attachments/assets/96b8c8d1-05c9-41cb-adfa-b8cea50ab252)

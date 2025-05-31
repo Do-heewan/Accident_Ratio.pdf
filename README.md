@@ -29,8 +29,6 @@
 
 [`OpenMMLab`](https://github.com/open-mmlab)의 오픈 라이브러리인 [`mmdetection`](https://github.com/open-mmlab/mmdetection), [`mmaction2`](https://github.com/open-mmlab/mmaction2) 모델을 활용하여 교통사고 상황 당시 블랙박스 영상을 **Fine-Tuning** 시켜 객체 검출 및 사고 분류 모델을 제작. 해당 모델이 블랙박스 영상의 4가지 정보(사고 유형, 사고 장소 유형, 객체 A의 진행 방향, 객체 B의 진행 방향)를 추출한다. 추출된 정보는 랭체인 기술을 이용해 손해보험협회의 [자동차사고 과실비율 인정기준](https://accident.knia.or.kr/index)과 비교하여 인정 과실비율을 산정. 이후 사고 상황, 과실비율 분석, 판정 근거, 관련 법률 등의 정보를 제공하는 보고서를 생성한다.
 
-<br>
-
 ### 개발 배경
 
 - 해마다 교통사고 건수는 약 20만건 정도 발생(한국도로교통공단 교통사고분석시스템 24년 기준), 과실비율 산정 청구 건수 또한 해마다 증가하는 추세(23년 기준 약 13만건, 손해보험협회)

@@ -22,6 +22,6 @@
 ## 1. 프로젝트 개요
 
 <div align="center">
-    <img src="https://github.com/user-attachments/assets/9eda9566-0f2c-42bd-906d-0a0d07efdafb">
+    <img src="https://github.com/user-attachments/assets/f96da286-a555-460f-b949-d78d9df65238">
 </div>
 

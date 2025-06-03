@@ -79,7 +79,7 @@ split_traffic_documents = text_splitter.split_documents(traffic_docs)
 
 # 단계 3 : 임베딩
 embeddings = OpenAIEmbeddings(
-    model="text-embedding-3-small"  # 더 가벼운 모델
+    model="text-embedding-3-small"
 )
 
 # 단계 4 : 벡터 스토어 생성

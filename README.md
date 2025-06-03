@@ -63,9 +63,12 @@
 ### 객체 탐지 (Object Detection)
 - DetectoRS 알고리즘을 이용하여 9종(자동차, 보행자, 이륜차, 자전거 표지판, 신호등(적색), 신호등(청색), 신호등(기타), 횡단보도)의 객체를 검출
 
+![DetectoRS](https://github.com/user-attachments/assets/c40c901e-6b36-40fe-8368-f93ce2256cb2)
+
 ### 사고 영상 분류 (Video Classification)
 - 4개의 직렬연결 VTN 알고리즘을 이용하여 영상에서 사고 정보 4가지를 추출
 
+![VTN](https://github.com/user-attachments/assets/3dd270a5-4abc-4a8d-a320-2f7f6d54099a)
 
 ### 랭체인 (LangChain)
 - RAG 파이프라인 기반

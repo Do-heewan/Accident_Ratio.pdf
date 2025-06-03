@@ -8,7 +8,7 @@ from mmaction.apis import init_recognizer
 from mmaction.datasets.pipelines import Compose
 from mmcv.parallel import collate, scatter
 
-video_name = "bb_1_220122_vehicle_229_34825"
+video_name = "bb_1_210925_vehicle_222_50532"
 point_of_view = "1인칭"
 
 real_categories_ids_1st = {
@@ -33,7 +33,7 @@ real_categories_ids_2nd = {
     46 : "자동차와 이륜차가 나란히 통행 가능한 차로폭", 47 : "정체도로", 48 : "유턴구역", 49 : "상대차량이 맞은편 방향에서 진입",
     50 : "노면 표시 위반사고", 51 : "인도에서 차도가 아닌 장소로 진입", 52 : "마주보는 자전거와 자동차간의 사고",
     53 : "선행차량과 후행차량", 54 : "자전거 횡단도로", 55 : "자동차와 자전거가 나란히 통행 가능한 차로폭",
-    56 : "자전거 전용도로", 57 : "자전거 전용차로", 58 : "자전거 우선도로", 59 : "비보호좌회전표지있음", 60 : "신호등이한쪽차량방향에만있음"
+    56 : "자전거 전용도로", 57 : "자전거 전용차로", 58 : "자전거 우선도로", 59 : "비보호좌회전표지있음"
 }
 
 real_categories_ids_3rd = {
@@ -76,11 +76,7 @@ real_categories_ids_3rd = {
     148 : "추월 우회전(직진 노면표시차로)", 149 : "직진(직진.우회전 노면표시차로)", 150 : "차도가 아닌 장소에서 차도로 진입", 151 : "차도에서 차도가 아닌 장소로 진입",
     152 : "인도에서 차도가 아닌 장소로 진행", 153 : "교차로 내 회전", 154 : "회전교차로 진입", 155 : "회전교차로 진입(2차로 → 회전 2차로)",
     156 : "회전교차로 대진입", 157 : "차도 횡단", 158 : "[자동차를 마주보며] 역주행", 159 : "자전거 횡단도로 횡단", 160 : "[자동차를 마주보며] 직진",
-    161 : "[자동차를 마주보며] 좌회전", 162 : "오른쪽에서 우회전", 163 : "자동차 좌측에서 대우회전", 164 : "자동차 좌측에서 소우회전",
-    165 : "[녹색신호] 좌회전(비보호 좌회전)", 166 : "자전거 전용도로 통행", 167 : "자전거 전용차로 통행", 168 : "자전거 우선도로 통행",
-    169 : "(마주보며) [적색신호] 직진", 170 : "(마주보며) [녹색신호] 직진", 171 : "(마주보며) [황색신호] 직진", 172 : "(마주보며) [녹색 좌회전 신호] 좌회전, [적색신호 충돌]",
-    173 : "(마주보며) [황색신호] 좌회전, [적색신호] 충돌", 174 : "(마주보며) [녹색신호] 좌회전 (비보호 좌회전)", 175 : "[무신호] 직진",
-    176 : "[무신호] 우회전", 177 : "[무신호] 좌회전", 178 : "[녹색 좌회전 신호] 직진 (좌회전 노면표시차로)", 179 : "선행 우회전(직진·우회전 노면표시차로)"
+    161 : "[자동차를 마주보며] 좌회전", 162 : "오른쪽에서 우회전", 163 : "자동차 좌측에서 대우회전", 164 : "자동차 좌측에서 소우회전"
 }
 
 real_categories_ids_4th = {
@@ -120,13 +116,7 @@ real_categories_ids_4th = {
     134 : "동일차로에서 선행 직진", 135 : "이륜차 우측에서 선행 좌회전(이륜차 좌측에서 선행 우회전)", 136 : "이륜차 좌측에서 후행 직진(이륜차 우측에서 후행 직진)", 137 : "[녹색신호] 직진(교차로내진로변경)", 138 : "중앙선 침범 추월",
     139 : "상시유턴구역에서 유턴", 140 : "신호에 따른 유턴", 141 : "우회전(좌측도로)", 142 : "급 유턴(후행)", 143 : "동시 유턴(후행)", 144 : "유턴(선행)",
     145 : "동시 유턴(선행)", 146 : "맞은편 우회전", 147 : "[녹색직진.좌회전 신호] 선행 좌회전(직진좌회전 노면표시차로)",
-    148 : "[녹색직진.좌회전 신호] 후행 직진(좌회전 노면표시차로)", 149 : "직진(직진.좌회전 노면표시차로)", 150 : "좌회전(직진 노면표시차로)", 151 : "직진(직진.우회전 노면표시차로)",
-    152 : "추월 우회전(직진 노면표시차로)", 153 : "차도가 아닌 장소에서 차도로 진입", 154 : "차도에서 직진", 155 : "차도에서 차도가 아닌 장소로 진입",
-    156 : "회전(회전 2차로)", 157 : "회전교차로 진입(1차로 → 회전 2차로)", 158 : "회전(회전 1차로)", 159 : "[자전거를 마주보며] 직진", 160 : "오른쪽에서 우회전",
-    161 : "[자전거를 마주보며] 좌회전", 162 : "자전거 좌측에서 대우회전", 163 : "자전거 좌측에서 소우회전", 164 : "[녹색신호] 좌회전(비보호 좌회전)",
-    165 : "(마주보며) [녹색좌회전신호] 좌회전", 166 : "(마주보며) [적색신호] 좌회전", 167 : "(마주보며) [녹색신호] 좌회전 (비보호좌회전 아님)", 168 : "(마주보며) [녹색신호] 좌회전, [황색신호] 충돌",
-    169 : "(마주보며) [황색신호] 좌회전", 170 : "(마주보며) [녹색신호] 직진", 171 : "[녹색 좌회전 신호] 좌회전 (직진·좌회전 노면표시차로)", 172 : "후행 직진(우회전 노면표시차로)",
-    173 : "[적색신호] 직진 (긴급자동차)"
+    148 : "[녹색직진.좌회전 신호] 후행 직진(좌회전 노면표시차로)", 149 : "직진(직진.좌회전 노면표시차로)", 150 : "좌회전(직진 노면표시차로)", 151 : "직진(직진.우회전 노면표시차로)"
 }
 
 def directory_classifier_restrict_1(data_dir, num_class = 15):
@@ -148,7 +138,7 @@ def directory_classifier_restrict_1(data_dir, num_class = 15):
         cluster_dict[key] = one_hot_label
     return cluster_dict
 
-def directory_classifier_restrict_2(data_dir, num_class = 61):
+def directory_classifier_restrict_2(data_dir, num_class = 60):
     txt_constrict = 'Classifier_restrict_vector_2nd.txt'
     txt_name_constrict = os.path.join(data_dir, txt_constrict)
     constrict = open(txt_name_constrict, 'r')
@@ -166,7 +156,7 @@ def directory_classifier_restrict_2(data_dir, num_class = 61):
         cluster_dict[key] = one_hot_label
     return cluster_dict
 
-def directory_classifier_restrict_3(data_dir, num_class = 180):
+def directory_classifier_restrict_3(data_dir, num_class = 165):
     txt_constrict = 'Classifier_restrict_vector_3rd.txt'
     txt_name_constrict = os.path.join(data_dir, txt_constrict)
     constrict = open(txt_name_constrict, 'r')
@@ -184,7 +174,7 @@ def directory_classifier_restrict_3(data_dir, num_class = 180):
         cluster_dict[key] = one_hot_label
     return cluster_dict
 
-def directory_classifier_restrict_4(data_dir, num_class = 174):
+def directory_classifier_restrict_4(data_dir, num_class = 152):
     txt_constrict = 'Classifier_restrict_vector_4th.txt'
     txt_name_constrict = os.path.join(data_dir, txt_constrict)
     constrict = open(txt_name_constrict, 'r')
@@ -201,82 +191,6 @@ def directory_classifier_restrict_4(data_dir, num_class = 174):
 
         cluster_dict[key] = one_hot_label
     return cluster_dict
-
-# 수정된 부분: 클러스터 제약 조건을 활용한 최종 결과 도출
-def get_constrained_prediction(scores_1, scores_2, scores_3, scores_4, cluster_dict_1, cluster_dict_2, cluster_dict_3, cluster_dict_4):
-    # 1단계 예측
-    pred_class_id_1 = np.argmax(scores_1)
-    pred_prob_1 = np.max(scores_1)
-    
-    # 1단계 결과에 따른 2단계 제약 조건 적용
-    valid_classes_2 = {}
-    for i in range(len(scores_2)):
-        key = f"{pred_class_id_1}"
-        if key in cluster_dict_1:
-            # 유효한 클래스에 대한 확률 저장
-            if cluster_dict_1[key][i] == 1:
-                valid_classes_2[i] = scores_2[i]
-    
-    # 2단계 예측 (제약 조건 적용)
-    valid_indices_2 = list(valid_classes_2.keys())
-    valid_scores_2 = np.array([valid_classes_2[i] for i in valid_indices_2])
-    if len(valid_indices_2) > 0:
-        local_max_idx = np.argmax(valid_scores_2)
-        pred_class_id_2 = valid_indices_2[local_max_idx]
-        pred_prob_2 = valid_scores_2[local_max_idx]
-    else:
-        # 제약 조건에 맞는 클래스가 없으면 원래 예측 사용
-        pred_class_id_2 = np.argmax(scores_2)
-        pred_prob_2 = np.max(scores_2)
-    
-    # 1,2단계 결과에 따른 3단계 제약 조건 적용
-    valid_classes_3 = {}
-    for i in range(len(scores_3)):
-        key = f"{pred_class_id_1}{pred_class_id_2}"
-        if key in cluster_dict_2:
-            if cluster_dict_2[key][i] == 1:
-                valid_classes_3[i] = scores_3[i]
-    
-    # 3단계 예측 (제약 조건 적용)
-    valid_indices_3 = list(valid_classes_3.keys())
-    valid_scores_3 = np.array([valid_classes_3[i] for i in valid_indices_3])
-    if len(valid_indices_3) > 0:
-        local_max_idx = np.argmax(valid_scores_3)
-        pred_class_id_3 = valid_indices_3[local_max_idx]
-        pred_prob_3 = valid_scores_3[local_max_idx]
-    else:
-        pred_class_id_3 = np.argmax(scores_3)
-        pred_prob_3 = np.max(scores_3)
-    
-    # 1,2,3단계 결과에 따른 4단계 제약 조건 적용
-    valid_classes_4 = {}
-    for i in range(len(scores_4)):
-        key = f"{pred_class_id_1}{pred_class_id_2}{pred_class_id_3}"
-        if key in cluster_dict_3:
-            if cluster_dict_3[key][i] == 1:
-                valid_classes_4[i] = scores_4[i]
-    
-    # 4단계 예측 (제약 조건 적용)
-    valid_indices_4 = list(valid_classes_4.keys())
-    valid_scores_4 = np.array([valid_classes_4[i] for i in valid_indices_4])
-    if len(valid_indices_4) > 0:
-        local_max_idx = np.argmax(valid_scores_4)
-        pred_class_id_4 = valid_indices_4[local_max_idx]
-        pred_prob_4 = valid_scores_4[local_max_idx]
-    else:
-        pred_class_id_4 = np.argmax(scores_4)
-        pred_prob_4 = np.max(scores_4)
-    
-    return {
-        'class_id_1': int(pred_class_id_1),
-        'prob_1': float(pred_prob_1),
-        'class_id_2': int(pred_class_id_2),
-        'prob_2': float(pred_prob_2),
-        'class_id_3': int(pred_class_id_3),
-        'prob_3': float(pred_prob_3),
-        'class_id_4': int(pred_class_id_4),
-        'prob_4': float(pred_prob_4)
-    }
 
 def softmax(x):
     f_x = np.exp(x) / np.sum(np.exp(x))
@@ -376,34 +290,35 @@ model_3 = init_recognizer(config_path_3, checkpoint_path_3, device='cpu', use_fr
 model_4 = init_recognizer(config_path_4, checkpoint_path_4, device='cpu', use_frames=True)
 
 # 사고 분류 추론
+# 1st 사고 장소 분류
 cls_scores_1, cls_scores_softmax_1 = inference_recognizer(model_1, video_path, outputs='cls_score', as_tensor=True)
+pred_class_id_1 = np.argmax(cls_scores_softmax_1[0])  # 제약 없이 가장 높은 확률의 클래스 선택
+
+# 2nd 사고 특성 분류
+key_2 = f"{0}{pred_class_id_1}" 
+constraint_2 = cluster_dict_2.get(key_2, np.ones(60))  # 첫 번째 결과에 기반한 제약조건
+
 cls_scores_2, cls_scores_softmax_2 = inference_recognizer(model_2, video_path, outputs='cls_score', as_tensor=True)
+constrained_scores_2 = cls_scores_softmax_2 * constraint_2
+pred_class_id_2 = np.argmax(constrained_scores_2[0])  # 제약조건이 적용된 예측
+
+# 3rd 객체 A 행동 분류
+key_3 = f"{0}{pred_class_id_1}{pred_class_id_2}"
+constraint_3 = cluster_dict_3.get(key_3, np.ones(165))
+
 cls_scores_3, cls_scores_softmax_3 = inference_recognizer(model_3, video_path, outputs='cls_score', as_tensor=True)
+constrained_scores_3 = cls_scores_softmax_3 * constraint_3
+pred_class_id_3 = np.argmax(constrained_scores_3[0])
+
+# 4th 객체 B 행동 분류
+key_4 = f"{0}{pred_class_id_1}{pred_class_id_2}{pred_class_id_3}"
+constraint_4 = cluster_dict_4.get(key_4, np.ones(152))
+
 cls_scores_4, cls_scores_softmax_4 = inference_recognizer(model_4, video_path, outputs='cls_score', as_tensor=True)
+constrained_scores_4 = cls_scores_softmax_4 * constraint_4
+pred_class_id_4 = np.argmax(constrained_scores_4[0])
 
-# # 제약 조건을 고려한 예측 결과 도출
-# prediction = get_constrained_prediction(
-#     cls_scores_softmax_1, 
-#     cls_scores_softmax_2, 
-#     cls_scores_softmax_3, 
-#     cls_scores_softmax_4,
-#     cluster_dict_1,
-#     cluster_dict_2,
-#     cluster_dict_3,
-#     cluster_dict_4
-# )
-
-# # # 결과 추출
-# # pred_class_id_1 = prediction['class_id_1']
-# # pred_class_id_2 = prediction['class_id_2']
-# # pred_class_id_3 = prediction['class_id_3']
-# # pred_class_id_4 = prediction['class_id_4']
-
-pred_class_id_1 = np.argmax(cls_scores_softmax_1)
-pred_class_id_2 = np.argmax(cls_scores_softmax_2)
-pred_class_id_3 = np.argmax(cls_scores_softmax_3)
-pred_class_id_4 = np.argmax(cls_scores_softmax_4)
-
+# 결과 매핑
 result_1st = real_categories_ids_1st[pred_class_id_1]
 result_2nd = real_categories_ids_2nd[pred_class_id_2]
 result_3rd = real_categories_ids_3rd[pred_class_id_3]
@@ -421,14 +336,15 @@ results.append({
 })
 
 print(f"1번 결과 : {pred_class_id_1}, 2번 결과 : {pred_class_id_2}, 3번 결과 : {pred_class_id_3}, 4번 결과 : {pred_class_id_4}")
+print(f"1번 결과 : {result_1st}, 2번 결과 : {result_2nd}, 3번 결과 : {result_3rd}, 4번 결과 : {result_4th}")
 
 # 결과 출력 형식 개선
-# print(f"\n===== 분석 결과: {video_name} =====")
-# print(f"사고 장소: {result_1st} (신뢰도: {prediction['prob_1']:.2f})")
-# print(f"사고 특성: {result_2nd} (신뢰도: {prediction['prob_2']:.2f})")
-# print(f"객체 A 행동: {result_3rd} (신뢰도: {prediction['prob_3']:.2f})")
-# print(f"객체 B 행동: {result_4th} (신뢰도: {prediction['prob_4']:.2f})")
-# print("================================\n")
+print(f"\n===== 분석 결과: {video_name} =====")
+print(f"사고 장소: {result_1st} (신뢰도: {cls_scores_softmax_1[0][pred_class_id_1]})")
+print(f"사고 특성: {result_2nd} (신뢰도: {constrained_scores_2[0][pred_class_id_2]})")
+print(f"객체 A 행동: {result_3rd} (신뢰도: {constrained_scores_3[0][pred_class_id_3]})")
+print(f"객체 B 행동: {result_4th} (신뢰도: {constrained_scores_4[0][pred_class_id_4]})")
+print("================================\n")
 # print(f"1번 신뢰도 : {cls_scores_softmax_1}")
 # print(f"2번 신뢰도 : {cls_scores_softmax_2}")
 # print(f"3번 신뢰도 : {cls_scores_softmax_3}")

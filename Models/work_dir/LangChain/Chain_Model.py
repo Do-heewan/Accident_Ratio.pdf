@@ -36,7 +36,7 @@ load_dotenv()
 # API KEY 정보로드
 API_KEY = os.getenv("OPEN_API_KEY")
 
-video_name = "bb_1_220122_vehicle_229_34825"
+video_name = "시연영상_1"
 
 work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 
@@ -97,7 +97,7 @@ prompt = PromptTemplate.from_template(
     사용자 질문과 문서 내용을 바탕으로 다음과 같은 구조로 사고 정보를 정리해주세요.
     ~~ 입니다. ~~ 답변 드리겠습니다. 등의 답변은 하지 마세요.
 
-    사고유형번호에 대해 물어보면 예시와 동일한 유형의 사고유형 번호를 알려주세요. 없으면 답하지 마세요. (예시 : 차15-1, 보9 등)
+    사고유형번호에 대해 물어보면 예시와 같이 사고유형 번호만 알려주세요. 없으면 답하지 마세요. (예시 : 차15-1, 보9 등)
 
     사건정보에 대해 물어보면 다음과 같은 형식으로 답변해주세요. :
     [사건분류: (예: 차대 보행자 / 차대 이륜차 / 차대 자전거 / 차대차)

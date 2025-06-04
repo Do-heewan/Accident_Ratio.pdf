@@ -7,7 +7,7 @@ import numpy as np
 from glob import glob
 from PIL import Image
 
-video_name = "KakaoTalk_20250520_141905751"
+video_name = "시연영상_1"
 
 work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
 

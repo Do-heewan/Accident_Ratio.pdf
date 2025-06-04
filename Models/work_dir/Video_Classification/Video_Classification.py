@@ -8,7 +8,7 @@ from mmaction.apis import init_recognizer
 from mmaction.datasets.pipelines import Compose
 from mmcv.parallel import collate, scatter
 
-video_name = "bb_1_210925_vehicle_222_50532"
+video_name = "시연영상_1"
 point_of_view = "1인칭"
 
 real_categories_ids_1st = {

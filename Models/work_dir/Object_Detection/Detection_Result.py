@@ -25,7 +25,7 @@ image_files = sorted(glob(os.path.join(image_path, "*.png")))
 print(f"이미지 파일 개수: {len(image_files)}")
 
 # 예측 결과 로드
-with open(pred_json_file, 'r') as f:
+with open(pred_json_file, 'r', encoding="utf-8") as f:
     predictions = json.load(f)
 
 print(f"예측 결과 개수: {len(predictions)}")
@@ -103,7 +103,6 @@ def visualize_predictions(image_path, annotations, output_path):
         
         # 직접 경로 처리 후 저장
         clean_output_path = output_path.replace('\\', '/')
-        print(f"저장 시도: {clean_output_path}")
         
         # 이미지 저장 (파일명을 명시적으로 처리)
         output_filename = os.path.basename(clean_output_path)
@@ -138,7 +137,7 @@ def visualize_predictions(image_path, annotations, output_path):
 print("\n이미지 파일 목록으로 시각화 중...")
 successful_count = 0
 
-for img_file in tqdm(image_files):
+for img_file in image_files:
     img_name = os.path.basename(img_file)
     img_file_normalized = img_file.replace('\\', '/')
 

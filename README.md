@@ -9,7 +9,7 @@
 **Accident_Ratio.pdf** 는 교통사고 당시 사고 영상을 기반으로 사고 객체 탐지, 사고 유형 분류 및 해당 사고의 정보를 담은 보고서를 작성하는 서비스입니다. 
 
 <div align="center">
-    <img src="https://github.com/user-attachments/assets/7b27439c-6ad1-45d4-b91c-ab742f0c9a2f">
+    <a href = "https://github.com/user-attachments/assets/9eda9566-0f2c-42bd-906d-0a0d07efdafb"></a>
 </div>
 
 [`OpenMMLab`](https://github.com/open-mmlab)의 오픈 라이브러리인 [`mmdetection`](https://github.com/open-mmlab/mmdetection), [`mmaction2`](https://github.com/open-mmlab/mmaction2) 모델을 활용하여 교통사고 상황 당시 블랙박스 영상을 **Fine-Tuning** 시켜 객체 검출 및 사고 분류 모델을 제작. 해당 모델은 블랙박스 영상의 객체 및 4가지 정보(사고 유형, 사고 장소 유형, 객체 A의 진행 방향, 객체 B의 진행 방향)를 추출한다. 추출된 정보는 랭체인 기술을 이용해 손해보험협회의 [자동차사고 과실비율 인정기준](https://accident.knia.or.kr/index)과 비교하여 인정 과실비율을 산정. 이후 사고 상황, 과실비율 분석, 판정 근거, 관련 법률 등의 정보를 제공하는 보고서를 생성한다.
@@ -80,4 +80,11 @@
 
 ## 5. 시연 영상
 
-[![Image](https://github.com/user-attachments/assets/f88a2400-20a1-49aa-b84d-f6ac1278b9f4)](https://youtu.be/3Fdny2gf69M)
+<!-- 시연 영상 유튜브 링크, 썸네일 이미지 변경
+[![Image](https://github.com/user-attachments/assets/f88a2400-20a1-49aa-b84d-f6ac1278b9f4)](https://youtu.be/3Fdny2gf69M) -->
+
+
+<!-- 포스터 발표자료 이미지 
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/7b27439c-6ad1-45d4-b91c-ab742f0c9a2f">
+</div> -->

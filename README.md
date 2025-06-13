@@ -136,3 +136,5 @@
     - 불필요한 소송 감소 등
 5. AI – Law 융합 사례
     - 실제 법률 해석과 AI 기술의 융합 가능성 제시
+
+![Image](https://github.com/user-attachments/assets/658290bb-d351-4b3b-ad72-0ce2c72eeb08)

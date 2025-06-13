@@ -370,12 +370,12 @@ def create_report_pdf(response, summary, traffic_response, output_filename=None)
         report_image = ReportImage(img_stream, width=6*inch, height=4*inch)
         # report_image = ReportImage(img_stream, width=doc.width, height=doc.width * 0.75)
         elements.append(report_image)
-        elements.append(Spacer(1, 0.25*inch))
+        elements.append(Spacer(1, 0.1*inch))
     else:
         print(f"❌ 이미지 파일이 존재하지 않습니다: {image}")
 
     elements.append(acc_num_p)
-    elements.append(Spacer(1, 0.25*inch))
+    elements.append(Spacer(1, 0.20*inch))
 
     # ✅ 다음 페이지로 강제 이동
     elements.append(PageBreak())    

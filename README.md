@@ -112,4 +112,4 @@
 
 ## 7. 발표 영상
 
-[![Image](https://github.com/user-attachments/assets/9e3ff12d-50eb-4bfa-8f47-d1e2d7730530)](https://www.youtube.com/watch?v=X27lDOch1pk&feature=youtu.be)
+[![Image](https://github.com/user-attachments/assets/27b2dcac-aa81-46fd-a8b1-80b5b35f4e86)](https://www.youtube.com/watch?v=X27lDOch1pk&feature=youtu.be)

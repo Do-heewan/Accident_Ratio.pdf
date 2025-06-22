@@ -8,7 +8,7 @@ from mmaction.apis import init_recognizer
 from mmaction.datasets.pipelines import Compose
 from mmcv.parallel import collate, scatter
 
-video_name = "시연영상_1"
+video_name = "" # video name
 point_of_view = "1인칭"
 
 real_categories_ids_1st = {
@@ -236,7 +236,7 @@ def inference_recognizer(model,
         scores, scores_pro = model.forward_test_with_constraint(imgs)
     return scores, scores_pro
 
-work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
+work_dir = "" # work directory path
 video_path = work_dir + "datasets/Video_Data/" + video_name + "/" # Video path
 
 cluster_path = work_dir + "video_classification/classifier/" # Classifier path

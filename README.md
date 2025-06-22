@@ -48,40 +48,6 @@
 
 ## 3. 프로젝트 구조
 
-### 모델 흐름도
-
-```
-[사용자 영상 업로드]
-        │
-        ▼
-[프레임 단위 분할]
-(Video_Frames_Export.py)
-        │
-        ▼
-[객체 탐지 수행]
-(Object_Detection.py)
-        │
-        ▼
-[탐지 결과 시각화 저장]
-(Detection_Result.py)
-        │
-        ▼
-[사고 영상 분류 수행]
-(Video_Classification.py)
- - 사고 유형/위치/진행 방향 추론
-        |
-        ▼
-[LangChain 기반 LLM 연동]
-(Chain_Model.py)
- - 사고 설명 요약
- - 과실비율 추론
- - 법적 근거 연동
- - 보고서 자동 작성
-        │
-        ▼
-[최종 보고서 생성 및 출력]
-```
-
 ### 시스템 다이어그램
 
 ![시스템 다이어그램](https://github.com/user-attachments/assets/96b8c8d1-05c9-41cb-adfa-b8cea50ab252)
@@ -97,10 +63,12 @@
 
 ### 사고 영상 분류 (Video Classification)
 - 4개의 직렬연결 VTN 알고리즘을 이용하여 영상에서 사고 정보 4가지를 추출
-- VTN 모델이 순차적으로 사고 유형 정보를 추출 <br>
-    (사고 유형 정보 추출 -> 사고 장소 유형에 해당하는 사고 장소 유형 추출 -> 해당 사고 장소에서 행동 가능한 객체 A, B의 행동 추출)
 
-![VTN](https://github.com/user-attachments/assets/3dd270a5-4abc-4a8d-a320-2f7f6d54099a)
+![4개의모델](https://github.com/user-attachments/assets/9268916b-324b-44d6-98bd-9614011b9245)
+
+- 프레임 단위의 영상을 입력으로 받아 두 Pathway를 거쳐 보다 정밀하게 영상 분류 수행
+
+![slowfast](https://github.com/user-attachments/assets/3bfce42c-3959-4aab-b016-d5b0fbfaa396)
 
 - 각 classifier에 대해 제약조건 설정으로 모델의 성능을 높힘 (restrict_vector)
 
@@ -140,4 +108,12 @@
 
 <br>
 
-![Image](https://github.com/user-attachments/assets/658290bb-d351-4b3b-ad72-0ce2c72eeb08)
+## 6. 비즈니스 모델 캔버스
+
+![Image](https://github.com/user-attachments/assets/5ac6f13f-95a6-495d-b7f6-b14749c3d558)
+
+<br>
+
+## 7. 발표 영상
+
+![[Image](https://github.com/user-attachments/assets/9e3ff12d-50eb-4bfa-8f47-d1e2d7730530)](https://www.youtube.com/watch?v=X27lDOch1pk&feature=youtu.be)

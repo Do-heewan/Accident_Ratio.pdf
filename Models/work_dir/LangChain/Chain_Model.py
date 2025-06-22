@@ -36,12 +36,11 @@ load_dotenv()
 # API KEY 정보로드
 API_KEY = os.getenv("OPEN_API_KEY")
 
-video_name = "시연영상_1"
+video_name = "" # video name
+work_dir = "" # work directory path
 
-work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
-
-accident_ratio_pdf_path = work_dir + "LangChain/pdf_data/231107_과실비율인정기준_온라인용.pdf"
-traffic_law_pdf_path = work_dir + "LangChain/pdf_data/도로교통법.pdf"
+accident_ratio_pdf_path = work_dir + "" # 과실비율인정기준 pdf 경로
+traffic_law_pdf_path = work_dir + "" # 도로교통법 pdf 경로
 
 json_path = work_dir + "datasets/results/" + video_name + "_classification.json"
 
@@ -53,11 +52,6 @@ def load_mapping_file(file_path):
         return json.load(file)
     
 json_file = load_mapping_file(json_path) # 모델 아웃풋 파일
-
-one = json_file[0]["accident_place"]
-two = json_file[0]["accident_place_feature"]
-three = json_file[0]["object_A"]
-four = json_file[0]["object_B"]
 
 ### 랭체인 실행
 print("랭체인을 실행합니다...")
@@ -149,6 +143,11 @@ chain = (
     | llm
     | StrOutputParser()
 )
+
+one = json_file[0]["accident_place"]
+two = json_file[0]["accident_place_feature"]
+three = json_file[0]["object_A"]
+four = json_file[0]["object_B"]
 
 accident = f"사고 장소 {one} 사고 유형 {two} 사고 객체 A의 진행 방향 {three} 사고 객체 B의 진행 방향 {four}에 해당하는 사고"
 

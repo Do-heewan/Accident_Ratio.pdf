@@ -7,9 +7,8 @@ import numpy as np
 from glob import glob
 from PIL import Image
 
-video_name = "시연영상_1"
-
-work_dir = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
+video_name = "" # video name
+work_dir = "" # work directory path
 
 config_path = work_dir + "Object_Detection/config/cascade_rcnn_cfg.py"
 checkpoint_path = work_dir + "Object_Detection/checkpoint/best_coco_bbox_mAP_epoch_10.pth"

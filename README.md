@@ -62,21 +62,17 @@
 ![DetectoRS](https://github.com/user-attachments/assets/c40c901e-6b36-40fe-8368-f93ce2256cb2)
 
 ### 사고 영상 분류 (Video Classification)
-- 4개의 직렬연결 VTN 알고리즘을 이용하여 영상에서 사고 정보 4가지를 추출
-
-![4개의모델](https://github.com/user-attachments/assets/9268916b-324b-44d6-98bd-9614011b9245)
-
+- SlowFast 구조를 가진 모델 활용
+- 각 모델은 4개의 직렬구조로 이루어져 총 4개의 출력값이 하나의 사고 유형을 이룸
 - 프레임 단위의 영상을 입력으로 받아 두 Pathway를 거쳐 보다 정밀하게 영상 분류 수행
 
+![4개의모델](https://github.com/user-attachments/assets/9268916b-324b-44d6-98bd-9614011b9245)
 ![slowfast](https://github.com/user-attachments/assets/3bfce42c-3959-4aab-b016-d5b0fbfaa396)
 
-- 각 classifier에 대해 제약조건 설정으로 모델의 성능을 높힘 (restrict_vector)
-
-### 랭체인 (LangChain)
+### 보고서 작성 및 생성 (LangChain)
 - RAG 파이프라인 기반
+- 사고 영상 분류 모델에서 추출된 사고 유형 정보를 바탕으로 해당 모델에서 과실비율 산정 및 사고 분석
 - 사고 정보를 기반으로 손해보험협회에서 제공한 `자동차사고 과실비율 인정기준.pdf`와 국가법령정보센터에서 제공한 `도로교통법.pdf`에서 검색
-- 프롬프트를 바탕으로 원하는 정보를 추출
-- 추출한 정보를 기반으로 보고서 생성
 
 <br>
 
@@ -115,7 +111,5 @@
 <br>
 
 ## 7. 발표 영상
-
-![Image](https://github.com/user-attachments/assets/9e3ff12d-50eb-4bfa-8f47-d1e2d7730530)
 
 [![Image](https://github.com/user-attachments/assets/9e3ff12d-50eb-4bfa-8f47-d1e2d7730530)](https://www.youtube.com/watch?v=X27lDOch1pk&feature=youtu.be)

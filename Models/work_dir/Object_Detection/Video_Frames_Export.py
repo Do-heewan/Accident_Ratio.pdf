@@ -3,9 +3,8 @@ import os
 from tqdm import tqdm
 from PIL import Image  # PIL Image 모듈 추가
 
-video_name = "시연영상_1.mp4" # 비디오 파일 이름
-
-video_path = "C:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/datasets/Video_Data/"
+video_name = "" # video name
+video_path = "" # work directory path
 
 def extract_frames(video_path, output_dir, frame_interval=1):
     """비디오에서 프레임 추출"""

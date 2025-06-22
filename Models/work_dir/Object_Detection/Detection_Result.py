@@ -6,9 +6,8 @@ import numpy as np
 from PIL import Image
 from tqdm import tqdm
 
-video_name = "시연영상_1"
-
-work_dir = "c:/Users/Noh/github/Accident_Prediction_Prevent/Models/work_dir/"
+video_name = "" # video name
+work_dir = "" # work directory path
 data_dir = work_dir + "datasets/"
 
 image_path = data_dir + "video_data/" + video_name + "/"
